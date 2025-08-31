@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Игра - Амулет дракона</title>
+    <meta name="description" content="Текстовая MMORPG - Амулет дракона. Играйте прямо в браузере!">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="scripts.js" as="script">
+    <link rel="preload" href="components.js" as="script">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dragon: {
+                            50: '#fafafa', 100: '#f4f4f5', 200: '#e4e4e7', 300: '#d4d4d8',
+                            400: '#a1a1aa', 500: '#71717a', 600: '#52525b', 700: '#3f3f46',
+                            800: '#27272a', 900: '#18181b',
+                        },
+                        blood: {
+                            50: '#fef2f2', 100: '#fee2e2', 200: '#fecaca', 300: '#fca5a5',
+                            400: '#f87171', 500: '#ef4444', 600: '#dc2626', 700: '#b91c1c',
+                            800: '#991b1b', 900: '#7f1d1d',
+                        },
+                        gold: {
+                            50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d',
+                            400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309',
+                            800: '#92400e', 900: '#78350f',
+                        }
+                    },
+                    fontFamily: { 'medieval': ['serif'] },
+                    screens: { 'xs': '475px' }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        .game-container {
+            height: calc(100vh - 2rem);
+            max-height: 900px;
+        }
+        
+        .health-bar {
+            background: linear-gradient(90deg, #dc2626 0%, #ef4444 50%, #f87171 100%);
+        }
+        
+        .mana-bar {
+            background: linear-gradient(90deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
+        }
+        
+        .exp-bar {
+            background: linear-gradient(90deg, #059669 0%, #10b981 50%, #34d399 100%);
+        }
+        
+        .chat-message {
+            animation: fadeIn 0.3s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .npc-interactive:hover {
+            background: linear-gradient(145deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05));
+            border-left: 4px solid #f59e0b;
+        }
+        
+        .player-interactive:hover {
+            background: linear-gradient(145deg, rgba(34, 197, 94, 0.1), rgba(22, 163, 74, 0.05));
+            border-left: 4px solid #10b981;
+        }
+        
+        .enemy-interactive:hover {
+            background: linear-gradient(145deg, rgba(220, 38, 38, 0.1), rgba(127, 29, 29, 0.05));
+            border-left: 4px solid #dc2626;
+        }
+        
+        .item-interactive:hover {
+            background: linear-gradient(145deg, rgba(168, 85, 247, 0.1), rgba(124, 58, 237, 0.05));
+            border-left: 4px solid #a855f7;
+        }
+        
+        .location-exit {
+            transition: all 0.3s ease;
+        }
+        
+        .location-exit:hover {
+            background: linear-gradient(45deg, rgba(127, 29, 29, 0.3), rgba(185, 28, 28, 0.2));
+            transform: translateY(-2px);
+        }
+        
+        .action-menu {
+            display: none;
+            position: absolute;
+            z-index: 50;
+            min-width: 200px;
+        }
+        
+        .action-menu.show {
+            display: block;
+        }
+        
+        .typing-indicator {
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body class="dragon-bg min-h-screen text-white" style="background-color: #0a0a0a !important;">
+    
+    <!-- Game Interface -->
+    <div class="p-2 sm:p-4">
+        <div class="max-w-7xl mx-auto game-container">
+            <div class="grid grid-cols-1 lg:grid-cols-4 gap-2 sm:gap-4 h-full">
+                
+                <!-- Player Stats Panel -->
+                <div class="lg:col-span-1 space-y-2 sm:space-y-4">
+                    
+                    <!-- Player Info -->
+                    <div class="dragon-card rounded-xl p-3 sm:p-4">
+                        <div class="flex items-center mb-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-gold-500 to-gold-700 rounded-full flex items-center justify-center text-xl font-bold">
+                                ⚔
+                            </div>
+                            <div class="ml-3">
+                                <h2 class="font-medieval font-bold text-gold-400 text-sm sm:text-base" id="playerName">КровавыйКлинок</h2>
+                                <p class="text-xs text-dragon-300">Уровень <span id="playerLevel">15</span> Воин</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Health Bar -->
+                        <div class="mb-2">
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-red-400">❤ Здоровье</span>
+                                <span id="healthText">85/100</span>
+                            </div>
+                            <div class="w-full bg-dragon-800 rounded-full h-2">
+                                <div class="health-bar h-2 rounded-full" style="width: 85%" id="healthBar"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Mana Bar -->
+                        <div class="mb-2">
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-blue-400">🔮 Мана</span>
+                                <span id="manaText">45/60</span>
+                            </div>
+                            <div class="w-full bg-dragon-800 rounded-full h-2">
+                                <div class="mana-bar h-2 rounded-full" style="width: 75%" id="manaBar"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Experience Bar -->
+                        <div class="mb-3">
+                            <div class="flex justify-between text-xs mb-1">
+                                <span class="text-green-400">⭐ Опыт</span>
+                                <span id="expText">2,340/3,000</span>
+                            </div>
+                            <div class="w-full bg-dragon-800 rounded-full h-2">
+                                <div class="exp-bar h-2 rounded-full" style="width: 78%" id="expBar"></div>
+                            </div>
+                        </div>
+                        
+                        <!-- Additional Stats -->
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div class="text-center">
+                                <div class="text-gold-400 font-semibold" id="playerGold">1,250</div>
+                                <div class="text-dragon-400">💰 Золото</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-purple-400 font-semibold" id="playerGuild">Стальные Волки</div>
+                                <div class="text-dragon-400">🛡 Клан</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Quick Actions -->
+                    <div class="dragon-card rounded-xl p-3 sm:p-4">
+                        <h3 class="font-medieval font-semibold text-gold-400 mb-3 text-sm">⚡ Быстрые действия</h3>
+                        <div class="grid grid-cols-1 gap-2">
+                            <button class="btn-secondary px-3 py-2 rounded-lg font-medieval text-xs" onclick="openInventory()">
+                                🎒 Инвентарь
+                            </button>
+                            <button class="btn-secondary px-3 py-2 rounded-lg font-medieval text-xs" onclick="openSpells()">
+                                📜 Заклинания
+                            </button>
+                            <button class="btn-secondary px-3 py-2 rounded-lg font-medieval text-xs" onclick="openQuests()">
+                                📋 Квесты
+                            </button>
+                            <button class="btn-secondary px-3 py-2 rounded-lg font-medieval text-xs" onclick="openSettings()">
+                                ⚙ Настройки
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Online Players -->
+                    <div class="dragon-card rounded-xl p-3 sm:p-4">
+                        <h3 class="font-medieval font-semibold text-gold-400 mb-3 text-sm">👥 В сети (12)</h3>
+                        <div class="space-y-1 max-h-32 overflow-y-auto text-xs" id="onlineList">
+                            <div class="flex items-center justify-between py-1">
+                                <span class="text-green-400">🟢 ТеневойУбийца</span>
+                                <span class="text-dragon-400">Ур.23</span>
+                            </div>
+                            <div class="flex items-center justify-between py-1">
+                                <span class="text-green-400">🟢 ОгненнаяВалькирия</span>
+                                <span class="text-dragon-400">Ур.18</span>
+                            </div>
+                            <div class="flex items-center justify-between py-1">
+                                <span class="text-green-400">🟢 МастерКлинка</span>
+                                <span class="text-dragon-400">Ур.31</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <!-- Main Game Area -->
+                <div class="lg:col-span-2 space-y-2 sm:space-y-4">
+                    
+                    <!-- Location Description -->
+                    <div class="dragon-card rounded-xl p-4 sm:p-6">
+                        <h1 class="font-medieval text-xl sm:text-2xl font-bold text-gold-400 mb-3 flex items-center">
+                            🍺 Таверна "Пьяный Дракон"
+                        </h1>
+                        <p class="font-story text-dragon-200 text-sm leading-relaxed mb-4">
+                            Уютная таверна наполнена теплым светом камина и ароматом жареного мяса. За дубовыми столами сидят путешественники, обсуждая последние новости и делясь историями о своих приключениях. Бармен-полурослик весело напевает песню, протирая кружки. В углу у камина дремлет старый кот, а под столами снуют наглые крысы, надеясь поживиться крошками.
+                        </p>
+                        
+                        <!-- Location Exits -->
+                        <div class="mb-4">
+                            <h3 class="font-medieval font-semibold text-gold-400 mb-2 text-sm">🚪 Выходы:</h3>
+                            <div class="flex flex-wrap gap-2">
+                                <button class="location-exit btn-secondary px-3 py-2 rounded-lg font-medieval text-xs" onclick="goToLocation('square')">
+                                    🏛 Городская площадь
+                                </button>
+                                <button class="location-exit btn-secondary px-3 py-2 rounded-lg font-medieval text-xs" onclick="goToLocation('rooms')">
+                                    🛏 Комнаты для постояльцев
+                                </button>
+                                <button class="location-exit btn-secondary px-3 py-2 rounded-lg font-medieval text-xs" onclick="goToLocation('cellar')">
+                                    🕳 Подвал
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Entities in Location -->
+                    <div class="dragon-card rounded-xl p-4 sm:p-6">
+                        <h3 class="font-medieval font-semibold text-gold-400 mb-4 text-sm sm:text-base">👁 В локации:</h3>
+                        <div class="space-y-2" id="locationEntities">
+                            
+                            <!-- NPCs -->
+                            <div class="npc-interactive p-3 rounded-lg border-l-4 border-transparent cursor-pointer transition-all" onclick="showActionMenu(event, 'npc', 'barman')">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-lg mr-3">🧔</span>
+                                        <div>
+                                            <span class="font-medieval font-semibold text-gold-400">Бармен Торвальд</span>
+                                            <p class="text-xs text-dragon-300">Полурослик-трактирщик, дружелюбно улыбается</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs text-gold-500">NPC</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Players -->
+                            <div class="player-interactive p-3 rounded-lg border-l-4 border-transparent cursor-pointer transition-all" onclick="showActionMenu(event, 'player', 'shadowkiller')">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-lg mr-3">🗡</span>
+                                        <div>
+                                            <span class="font-medieval font-semibold text-green-400">ТеневойУбийца</span>
+                                            <p class="text-xs text-dragon-300">Уровень 23 Разбойник, точит кинжал</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs text-green-500">Игрок</span>
+                                </div>
+                            </div>
+                            
+                            <div class="player-interactive p-3 rounded-lg border-l-4 border-transparent cursor-pointer transition-all" onclick="showActionMenu(event, 'player', 'firevalkyrie')">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-lg mr-3">🔥</span>
+                                        <div>
+                                            <span class="font-medieval font-semibold text-green-400">ОгненнаяВалькирия</span>
+                                            <p class="text-xs text-dragon-300">Уровень 18 Маг, изучает заклинание</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs text-green-500">Игрок</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Enemies -->
+                            <div class="enemy-interactive p-3 rounded-lg border-l-4 border-transparent cursor-pointer transition-all" onclick="showActionMenu(event, 'enemy', 'rat1')">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-lg mr-3">🐀</span>
+                                        <div>
+                                            <span class="font-medieval font-semibold text-red-400">Наглая крыса</span>
+                                            <p class="text-xs text-dragon-300">Уровень 2, грызет кость под столом</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs text-red-500">Враг</span>
+                                </div>
+                            </div>
+                            
+                            <div class="enemy-interactive p-3 rounded-lg border-l-4 border-transparent cursor-pointer transition-all" onclick="showActionMenu(event, 'enemy', 'rat2')">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-lg mr-3">🐀</span>
+                                        <div>
+                                            <span class="font-medieval font-semibold text-red-400">Жирная крыса</span>
+                                            <p class="text-xs text-dragon-300">Уровень 3, шарится по углам</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs text-red-500">Враг</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Items -->
+                            <div class="item-interactive p-3 rounded-lg border-l-4 border-transparent cursor-pointer transition-all" onclick="showActionMenu(event, 'item', 'coin')">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-lg mr-3">🪙</span>
+                                        <div>
+                                            <span class="font-medieval font-semibold text-purple-400">Золотая монета</span>
+                                            <p class="text-xs text-dragon-300">Блестит на полу возле бара</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs text-purple-500">Предмет</span>
+                                </div>
+                            </div>
+                            
+                            <div class="item-interactive p-3 rounded-lg border-l-4 border-transparent cursor-pointer transition-all" onclick="showActionMenu(event, 'item', 'dagger')">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <span class="text-lg mr-3">🗡</span>
+                                        <div>
+                                            <span class="font-medieval font-semibold text-purple-400">Старый кинжал</span>
+                                            <p class="text-xs text-dragon-300">Лежит забытый в углу</p>
+                                        </div>
+                                    </div>
+                                    <span class="text-xs text-purple-500">Предмет</span>
+                                </div>
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <!-- Chat Panel -->
+                <div class="lg:col-span-1">
+                    <div class="dragon-card rounded-xl p-3 sm:p-4 h-full flex flex-col">
+                        <h3 class="font-medieval font-semibold text-gold-400 mb-3 text-sm">💬 Чат</h3>
+                        
+                        <!-- Chat Messages -->
+                        <div class="flex-1 overflow-y-auto mb-3 space-y-2 text-xs" id="chatMessages" style="min-height: 200px; max-height: 400px;">
+                            <div class="chat-message">
+                                <span class="text-green-400">[ТеневойУбийца]:</span>
+                                <span class="text-dragon-200">Кто-нибудь знает, где найти Мастера Клинков?</span>
+                            </div>
+                            <div class="chat-message">
+                                <span class="text-gold-400">[Бармен Торвальд]:</span>
+                                <span class="text-dragon-200">Добро пожаловать в таверну, путник!</span>
+                            </div>
+                            <div class="chat-message">
+                                <span class="text-green-400">[ОгненнаяВалькирия]:</span>
+                                <span class="text-dragon-200">Ищу группу для похода в Темный лес</span>
+                            </div>
+                            <div class="chat-message">
+                                <span class="text-blue-400">[Система]:</span>
+                                <span class="text-dragon-300">МастерКлинка вошел в игру</span>
+                            </div>
+                            <div class="chat-message">
+                                <span class="text-green-400">[КровавыйКлинок]:</span>
+                                <span class="text-dragon-200">Привет всем! Как дела?</span>
+                            </div>
+                        </div>
+                        
+                        <!-- Chat Input -->
+                        <div class="space-y-2">
+                            <div class="flex gap-1 text-xs">
+                                <button class="chat-mode px-2 py-1 rounded bg-green-600 text-white" data-mode="say">Сказать</button>
+                                <button class="chat-mode px-2 py-1 rounded bg-dragon-600 text-dragon-200" data-mode="yell">Кричать</button>
+                                <button class="chat-mode px-2 py-1 rounded bg-dragon-600 text-dragon-200" data-mode="whisper">Шептать</button>
+                            </div>
+                            <div class="flex gap-2">
+                                <input 
+                                    type="text" 
+                                    id="chatInput" 
+                                    class="form-input flex-1 px-3 py-2 rounded-lg text-xs" 
+                                    placeholder="Введите сообщение..."
+                                    maxlength="200"
+                                >
+                                <button class="btn-dragon px-3 py-2 rounded-lg text-xs" onclick="sendMessage()">
+                                    📤
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    
+    <!-- Action Menu -->
+    <div id="actionMenu" class="action-menu dragon-card rounded-xl p-3 shadow-2xl">
+        <div id="actionMenuContent"></div>
+    </div>
+    
+    <!-- Modals -->
+    <div id="infoModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50 p-4">
+        <div class="dragon-card rounded-2xl p-6 max-w-md w-full">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="font-medieval text-xl font-semibold text-gold-400" id="modalTitle">Информация</h3>
+                <button onclick="closeModal()" class="text-dragon-400 hover:text-gold-400 text-xl">✕</button>
+            </div>
+            <div id="modalContent" class="font-story text-dragon-200 text-sm"></div>
+            <div class="flex justify-end mt-4">
+                <button onclick="closeModal()" class="btn-secondary px-4 py-2 rounded-lg font-medieval text-sm">
+                    Закрыть
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="scripts.js"></script>
+    <script src="components.js"></script>
+    
+    <script>
+        // Game state
+        let currentChatMode = 'say';
+        let gameData = {
+            player: {
+                name: 'КровавыйКлинок',
+                level: 15,
+                health: 85,
+                maxHealth: 100,
+                mana: 45,
+                maxMana: 60,
+                exp: 2340,
+                maxExp: 3000,
+                gold: 1250,
+                guild: 'Стальные Волки'
+            },
+            location: 'tavern'
+        };
+        
+        // Initialize game
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePlayerStats();
+            setupChatModes();
+            setupChatInput();
+            simulateActivity();
+            
+            console.log('Игра загружена - Таверна "Пьяный Дракон"');
+        });
+        
+        // Update player statistics display
+        function updatePlayerStats() {
+            const player = gameData.player;
+            
+            document.getElementById('playerName').textContent = player.name;
+            document.getElementById('playerLevel').textContent = player.level;
+            document.getElementById('playerGold').textContent = player.gold.toLocaleString();
+            document.getElementById('playerGuild').textContent = player.guild;
+            
+            // Health bar
+            const healthPercent = (player.health / player.maxHealth) * 100;
+            document.getElementById('healthBar').style.width = healthPercent + '%';
+            document.getElementById('healthText').textContent = `${player.health}/${player.maxHealth}`;
+            
+            // Mana bar
+            const manaPercent = (player.mana / player.maxMana) * 100;
+            document.getElementById('manaBar').style.width = manaPercent + '%';
+            document.getElementById('manaText').textContent = `${player.mana}/${player.maxMana}`;
+            
+            // Experience bar
+            const expPercent = (player.exp / player.maxExp) * 100;
+            document.getElementById('expBar').style.width = expPercent + '%';
+            document.getElementById('expText').textContent = `${player.exp.toLocaleString()}/${player.maxExp.toLocaleString()}`;
+        }
+        
+        // Show action menu
+        function showActionMenu(event, type, id) {
+            const menu = document.getElementById('actionMenu');
+            const content = document.getElementById('actionMenuContent');
+            
+            // Hide menu first
+            menu.classList.remove('show');
+            
+            // Position menu
+            const rect = event.currentTarget.getBoundingClientRect();
+            menu.style.left = (rect.right + 10) + 'px';
+            menu.style.top = rect.top + 'px';
+            
+            // Generate menu content based on type
+            let menuHTML = '';
+            
+            switch(type) {
+                case 'npc':
+                    menuHTML = `
+                        <div class="space-y-2">
+                            <h4 class="font-medieval font-semibold text-gold-400 text-sm mb-2">Действия с NPC:</h4>
+                            <button onclick="talkToNPC('${id}')" class="w-full btn-secondary px-3 py-2 rounded-lg font-medieval text-xs">💬 Поговорить</button>
+                            <button onclick="showInfo('${type}', '${id}')" class="w-full btn-secondary px-3 py-2 rounded-lg font-medieval text-xs">👁 Осмотреть</button>
+                            <button onclick="tradeWithNPC('${id}')" class="w-full btn-secondary px-3 py-2 rounded-lg font-medieval text-xs">🛒 Торговать</button>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'player':
+                    menuHTML = `
+                        <div class="space-y-2">
+                            <h4 class="font-medieval font-semibold text-green-400 text-sm mb-2">Действия с игроком:</h4>
+                            <button onclick="talkToPlayer('${id}')" class="w-full btn-secondary px-3 py-2 rounded-lg font-medieval text-xs">💬 Сказать</button>
+                            <button onclick="showInfo('${type}', '${id}')" class="w-full btn-secondary px-3 py-2 rounded-lg font-medieval text-xs">👁 Осмотреть</button>
+                            <button onclick="attackPlayer('${id}')" class="w-full btn-dragon px-3 py-2 rounded-lg font-medieval text-xs">⚔ Атаковать</button>
+                            <button onclick="inviteToGroup('${id}')" class="w-full btn-secondary px-3 py-2 rounded-lg font-medieval text-xs">👥 В группу</button>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'enemy':
+                    menuHTML = `
+                        <div class="space-y-2">
+                            <h4 class="font-medieval font-semibold text-red-400 text-sm mb-2">Действия с врагом:</h4>
+                            <button onclick="attackEnemy('${id}')" class="w-full btn-dragon px-3 py-2 rounded-lg font-medieval text-xs">⚔ Атаковать</button>
+                            <button onclick="showInfo('${type}', '${id}')" class="w-full btn-secondary px-3 py-2 rounded-lg font-medieval text-xs">👁 Осмотреть</button>
+                            <button onclick="castSpellOn('${id}')" class="w-full btn-secondary px-3 py-2 rounded-lg font-medieval text-xs">🔮 Заклинание</button>
+                        </div>
+                    `;
+                    break;
+                    
+                case 'item':
+                    menuHTML = `
+                        <div class="space-y-2">
+                            <h4 class="font-medieval font-semibold text-purple-400 text-sm mb-2">Действия с предметом:</h4>
+                            <button onclick="takeItem('${id}')" class="w-full btn-dragon px-3 py-2 rounded-lg font-medieval text-xs">📦 Взять</button>
+                            <button onclick="showInfo('${type}', '${id}')" class="w-full btn-secondary px-3 py-2 rounded-lg font-medieval text-xs">👁 Осмотреть</button>
+                            <button onclick="useItem('${id}')" class="w-full btn-secondary px-3 py-2 rounded-lg font-medieval text-xs">✨ Использовать</button>
+                        </div>
+                    `;
+                    break;
+            }
+            
+            content.innerHTML = menuHTML;
+            menu.classList.add('show');
+            
+            // Hide menu when clicking outside
+            setTimeout(() => {
+                document.addEventListener('click', hideActionMenu, { once: true });
+            }, 100);
+        }
+        
+        function hideActionMenu(event) {
+            const menu = document.getElementById('actionMenu');
+            if (!menu.contains(event.target)) {
+                menu.classList.remove('show');
+            }
+        }
+        
+        // Chat system
+        function setupChatModes() {
+            document.querySelectorAll('.chat-mode').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.chat-mode').forEach(b => {
+                        b.classList.remove('bg-green-600', 'text-white');
+                        b.classList.add('bg-dragon-600', 'text-dragon-200');
+                    });
+                    
+                    this.classList.remove('bg-dragon-600', 'text-dragon-200');
+                    this.classList.add('bg-green-600', 'text-white');
+                    
+                    currentChatMode = this.dataset.mode;
+                });
+            });
+        }
+        
+        function setupChatInput() {
+            const input = document.getElementById('chatInput');
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+        }
+        
+        function sendMessage() {
+            const input = document.getElementById('chatInput');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message';
+            
+            let prefix = '';
+            switch(currentChatMode) {
+                case 'say':
+                    prefix = `<span class="text-green-400">[${gameData.player.name}]:</span>`;
+                    break;
+                case 'yell':
+                    prefix = `<span class="text-yellow-400">[${gameData.player.name} кричит]:</span>`;
+                    break;
+                case 'whisper':
+                    prefix = `<span class="text-blue-400">[${gameData.player.name} шепчет]:</span>`;
+                    break;
+            }
+            
+            messageDiv.innerHTML = `${prefix} <span class="text-dragon-200">${message}</span>`;
+            chatMessages.appendChild(messageDiv);
+            
+            // Scroll to bottom
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            // Clear input
+            input.value = '';
+            
+            // Simulate responses
+            setTimeout(() => simulateResponse(message), 1000 + Math.random() * 2000);
+        }
+        
+        function simulateResponse(originalMessage) {
+            const responses = [
+                { name: 'ТеневойУбийца', message: 'Согласен с тобой!' },
+                { name: 'ОгненнаяВалькирия', message: 'Интересно...' },
+                { name: 'Бармен Торвальд', message: 'Еще эля, друзья?' },
+                { name: 'МастерКлинка', message: 'Кто-то говорил о битвах?' }
+            ];
+            
+            if (Math.random() < 0.3) { // 30% chance of response
+                const response = responses[Math.floor(Math.random() * responses.length)];
+                addChatMessage(response.name, response.message, 'green');
+            }
+        }
+        
+        function addChatMessage(name, message, color = 'green') {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message';
+            messageDiv.innerHTML = `<span class="text-${color}-400">[${name}]:</span> <span class="text-dragon-200">${message}</span>`;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+        
+        // Action handlers
+        function talkToNPC(id) {
+            hideActionMenu();
+            const responses = {
+                'barman': 'Добро пожаловать в мою таверну! У нас лучший эль в городе и горячая еда. Что желаете?'
+            };
+            addChatMessage('Бармен Торвальд', responses[id] || 'Приветствую вас!', 'gold');
+        }
+        
+        function talkToPlayer(id) {
+            hideActionMenu();
+            document.getElementById('chatInput').focus();
+            addChatMessage('Система', `Вы обращаетесь к игроку ${id}`, 'blue');
+        }
+        
+        function attackPlayer(id) {
+            hideActionMenu();
+            addChatMessage('Система', `Вы атакуете игрока ${id}! Начинается PvP бой.`, 'red');
+        }
+        
+        function attackEnemy(id) {
+            hideActionMenu();
+            const enemies = {
+                'rat1': 'Наглую крысу',
+                'rat2': 'Жирную крысу'
+            };
+            addChatMessage('Система', `Вы атакуете ${enemies[id]}! Начинается бой.`, 'red');
+        }
+        
+        function takeItem(id) {
+            hideActionMenu();
+            const items = {
+                'coin': 'Золотую монету (+5 золота)',
+                'dagger': 'Старый кинжал'
+            };
+            addChatMessage('Система', `Вы подбираете ${items[id]}`, 'blue');
+            
+            // Update gold if coin
+            if (id === 'coin') {
+                gameData.player.gold += 5;
+                updatePlayerStats();
+            }
+        }
+        
+        function showInfo(type, id) {
+            hideActionMenu();
+            
+            const infoData = {
+                npc: {
+                    barman: {
+                        title: '🧔 Бармен Торвальд',
+                        content: `
+                            <p><strong>Раса:</strong> Полурослик</p>
+                            <p><strong>Профессия:</strong> Трактирщик</p>
+                            <p><strong>Уровень:</strong> 25</p>
+                            <p><strong>Описание:</strong> Дружелюбный полурослик средних лет, владелец таверны "Пьяный Дракон". Знает множество историй и слухов. Торгует едой, напитками и предоставляет комнаты для ночлега.</p>
+                            <p><strong>Услуги:</strong> Продажа еды и напитков, аренда комнат, информация о городе</p>
+                        `
+                    }
+                },
+                player: {
+                    shadowkiller: {
+                        title: '🗡 ТеневойУбийца',
+                        content: `
+                            <p><strong>Класс:</strong> Разбойник</p>
+                            <p><strong>Уровень:</strong> 23</p>
+                            <p><strong>Клан:</strong> Черные Драконы</p>
+                            <p><strong>PvP рейтинг:</strong> 1,850</p>
+                            <p><strong>Статус:</strong> В поиске группы</p>
+                            <p><strong>Экипировка:</strong> Кожаная броня, отравленные кинжалы</p>
+                        `
+                    },
+                    firevalkyrie: {
+                        title: '🔥 ОгненнаяВалькирия',
+                        content: `
+                            <p><strong>Класс:</strong> Маг</p>
+                            <p><strong>Уровень:</strong> 18</p>
+                            <p><strong>Клан:</strong> Стальные Волки</p>
+                            <p><strong>Специализация:</strong> Огненная магия</p>
+                            <p><strong>Статус:</strong> Изучает заклинания</p>
+                            <p><strong>Экипировка:</strong> Мантия мага, огненный посох</p>
+                        `
+                    }
+                },
+                enemy: {
+                    rat1: {
+                        title: '🐀 Наглая крыса',
+                        content: `
+                            <p><strong>Уровень:</strong> 2</p>
+                            <p><strong>Здоровье:</strong> 25/25</p>
+                            <p><strong>Урон:</strong> 3-5</p>
+                            <p><strong>Защита:</strong> 1</p>
+                            <p><strong>Дроп:</strong> Крысиный хвост, мелкие монеты</p>
+                            <p><strong>Описание:</strong> Обычная таверная крыса, ставшая наглой от постоянной кормежки. Не представляет серьезной угрозы.</p>
+                        `
+                    },
+                    rat2: {
+                        title: '🐀 Жирная крыса',
+                        content: `
+                            <p><strong>Уровень:</strong> 3</p>
+                            <p><strong>Здоровье:</strong> 40/40</p>
+                            <p><strong>Урон:</strong> 4-7</p>
+                            <p><strong>Защита:</strong> 2</p>
+                            <p><strong>Дроп:</strong> Крысиный хвост, монеты, иногда сыр</p>
+                            <p><strong>Описание:</strong> Крупная крыса, откормившаяся остатками пищи. Более агрессивна чем обычные крысы.</p>
+                        `
+                    }
+                },
+                item: {
+                    coin: {
+                        title: '🪙 Золотая монета',
+                        content: `
+                            <p><strong>Тип:</strong> Валюта</p>
+                            <p><strong>Ценность:</strong> 5 золота</p>
+                            <p><strong>Вес:</strong> 0.1 кг</p>
+                            <p><strong>Описание:</strong> Обычная золотая монета королевства. На одной стороне изображен дракон, на другой - корона. Кто-то уронил ее и не заметил.</p>
+                        `
+                    },
+                    dagger: {
+                        title: '🗡 Старый кинжал',
+                        content: `
+                            <p><strong>Тип:</strong> Оружие (Кинжал)</p>
+                            <p><strong>Урон:</strong> 5-8</p>
+                            <p><strong>Скорость:</strong> Быстрая</p>
+                            <p><strong>Прочность:</strong> 45/100</p>
+                            <p><strong>Требования:</strong> Ловкость 8</p>
+                            <p><strong>Описание:</strong> Потертый кинжал с затупившимся лезвием. Когда-то был хорошим оружием, но теперь нуждается в ремонте.</p>
+                        `
+                    }
+                }
+            };
+            
+            const info = infoData[type]?.[id];
+            if (info) {
+                document.getElementById('modalTitle').innerHTML = info.title;
+                document.getElementById('modalContent').innerHTML = info.content;
+                document.getElementById('infoModal').classList.remove('hidden');
+            }
+        }
+        
+        function closeModal() {
+            document.getElementById('infoModal').classList.add('hidden');
+        }
+        
+        // Location navigation
+        function goToLocation(locationId) {
+            const locations = {
+                'square': 'Городская площадь',
+                'rooms': 'Комнаты для постояльцев',
+                'cellar': 'Подвал таверны'
+            };
+            
+            addChatMessage('Система', `Вы направляетесь в: ${locations[locationId]}`, 'blue');
+            // Here you would typically load the new location
+        }
+        
+        // Quick actions
+        function openInventory() {
+            addChatMessage('Система', 'Открыт инвентарь (функция в разработке)', 'blue');
+        }
+        
+        function openSpells() {
+            addChatMessage('Система', 'Открыта книга заклинаний (функция в разработке)', 'blue');
+        }
+        
+        function openQuests() {
+            addChatMessage('Система', 'Открыт журнал квестов (функция в разработке)', 'blue');
+        }
+        
+        function openSettings() {
+            addChatMessage('Система', 'Открыты настройки (функция в разработке)', 'blue');
+        }
+        
+        // Simulate game activity
+        function simulateActivity() {
+            setInterval(() => {
+                // Random events
+                if (Math.random() < 0.1) { // 10% chance every 5 seconds
+                    const events = [
+                        'Бармен наливает новую порцию эля',
+                        'Крыса пробегает под столом',
+                        'Камин потрескивает, разбрасывая искры',
+                        'Кто-то входит в таверну',
+                        'Слышен смех из дальнего угла'
+                    ];
+                    const event = events[Math.floor(Math.random() * events.length)];
+                    addChatMessage('Окружение', event, 'dragon');
+                }
+            }, 5000);
+        }
+    </script>
+    
+</body>
+</html>

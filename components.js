@@ -45,6 +45,7 @@ function createFooter() {
                     <div class="flex flex-wrap justify-center gap-x-4 gap-y-2 text-xs">
                         <a href="index.html" class="text-gold-500 hover:text-gold-400 transition-colors">Главная</a>
                         <a href="news.html" class="text-gold-500 hover:text-gold-400 transition-colors">Новости</a>
+                        <a href="codex.html" class="text-gold-500 hover:text-gold-400 transition-colors">Кодекс</a>
                         <a href="register.html" class="text-gold-500 hover:text-gold-400 transition-colors">Регистрация</a>
                         <a href="login.html" class="text-gold-500 hover:text-gold-400 transition-colors">Вход</a>
                         <a href="#" class="text-gold-500 hover:text-gold-400 transition-colors">Поддержка</a>
