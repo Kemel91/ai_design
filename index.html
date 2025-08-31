@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Амулет дракона - Текстовая MMORPG</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dragon: {
+                            50: '#fafafa',
+                            100: '#f4f4f5',
+                            200: '#e4e4e7',
+                            300: '#d4d4d8',
+                            400: '#a1a1aa',
+                            500: '#71717a',
+                            600: '#52525b',
+                            700: '#3f3f46',
+                            800: '#27272a',
+                            900: '#18181b',
+                        },
+                        blood: {
+                            50: '#fef2f2',
+                            100: '#fee2e2',
+                            200: '#fecaca',
+                            300: '#fca5a5',
+                            400: '#f87171',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            700: '#b91c1c',
+                            800: '#991b1b',
+                            900: '#7f1d1d',
+                        },
+                        gold: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#92400e',
+                            900: '#78350f',
+                        }
+                    },
+                    fontFamily: {
+                        'medieval': ['serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dragon-bg min-h-screen text-white" style="background-color: #0a0a0a !important;">
+    <!-- Header -->
+    <header class="relative py-8 px-4">
+        <div class="max-w-md mx-auto text-center">
+            <div class="mb-4">
+                <div class="logo-dragon font-medieval text-5xl font-bold mb-2">
+                    ⚔
+                </div>
+                <h1 class="font-medieval text-3xl font-bold text-glow mb-2">АМУЛЕТ ДРАКОНА</h1>
+                <div class="h-px bg-gradient-to-r from-transparent via-gold-600 to-transparent mb-2"></div>
+                <p class="font-story text-dragon-300 text-sm tracking-widest uppercase">Текстовая MMORPG</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="px-4 pb-8">
+        <div class="max-w-md mx-auto space-y-6">
+            
+            <!-- Welcome Card -->
+            <div class="dragon-card rounded-2xl p-6 glow">
+                <div class="text-center mb-6">
+                    <div class="professional-icon text-4xl mb-4 animate-float">🗡</div>
+                    <h2 class="font-medieval text-2xl font-semibold text-gold-400 mb-3">Добро пожаловать, воин</h2>
+                    <p class="font-story text-dragon-200 text-sm leading-relaxed">
+                        Погрузитесь в мрачный мир древних тайн и кровавых битв. Выкуйте свою судьбу в огне сражений и обретите силу легендарного Амулета дракона.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="space-y-4">
+                <a href="register.html" class="block w-full">
+                    <button class="w-full btn-dragon rounded-xl py-4 px-6 font-medieval font-semibold text-white shadow-lg">
+                        ⚔ НАЧАТЬ БИТВУ
+                    </button>
+                </a>
+                
+                <a href="login.html" class="block w-full">
+                    <button class="w-full dragon-card rounded-xl py-4 px-6 font-medieval font-semibold text-dragon-200 border border-gold-700 hover:bg-dragon-800/30 transition-all duration-300">
+                        🛡 ВОЙТИ В ИГРУ
+                    </button>
+                </a>
+            </div>
+
+            <!-- Game Features -->
+            <div class="dragon-card rounded-2xl p-6">
+                <h3 class="font-medieval text-xl font-semibold text-gold-400 mb-4 text-center">⚜ ВОЗМОЖНОСТИ МИРА</h3>
+                <div class="space-y-3">
+                    <div class="flex items-center space-x-3">
+                        <span class="professional-icon text-xl">⚔</span>
+                        <span class="font-story text-sm text-dragon-200">Смертельные схватки с древними тварями</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <span class="professional-icon text-xl">🏰</span>
+                        <span class="font-story text-sm text-dragon-200">Исследование проклятых катакомб</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <span class="professional-icon text-xl">🔮</span>
+                        <span class="font-story text-sm text-dragon-200">Темная магия и запретные знания</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <span class="professional-icon text-xl">⚡</span>
+                        <span class="font-story text-sm text-dragon-200">Братства воинов и кланы убийц</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <span class="professional-icon text-xl">📿</span>
+                        <span class="font-story text-sm text-dragon-200">Древние пророчества и тайные миссии</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Card -->
+            <div class="dragon-card rounded-2xl p-6">
+                <h3 class="font-medieval text-xl font-semibold text-gold-400 mb-4 text-center">⚔ СТАТИСТИКА ВОЙНЫ</h3>
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-blood-400">1,247</div>
+                        <div class="text-xs text-dragon-300 font-story">Воинов в бою</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-gold-500">89</div>
+                        <div class="text-xs text-dragon-300 font-story">Земель</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-blood-400">456</div>
+                        <div class="text-xs text-dragon-300 font-story">Заданий</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-gold-500">23</div>
+                        <div class="text-xs text-dragon-300 font-story">Кланов</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- News Card -->
+            <div class="dragon-card rounded-2xl p-6">
+                <a href="news.html" class="block hover:transform hover:scale-105 transition-transform duration-300">
+                    <h3 class="font-medieval text-xl font-semibold text-gold-400 mb-4 text-center">📜 ХРОНИКИ ВОЙНЫ</h3>
+                    <div class="space-y-3">
+                        <div class="border-l-4 border-blood-600 pl-4">
+                            <h4 class="font-story font-semibold text-sm text-dragon-200">Обновление "Логово Древнего"</h4>
+                            <p class="text-xs text-dragon-300 mt-1">Открыты врата в проклятые земли. Новый босс пробудился</p>
+                            <p class="text-xs text-gold-500 mt-1">2 дня назад</p>
+                        </div>
+                        <div class="border-l-4 border-gold-600 pl-4">
+                            <h4 class="font-story font-semibold text-sm text-dragon-200">Война кланов</h4>
+                            <p class="text-xs text-dragon-300 mt-1">Регистрация в кровавом турнире до полнолуния</p>
+                            <p class="text-xs text-gold-500 mt-1">5 дней назад</p>
+                        </div>
+                    </div>
+                    <div class="mt-4 text-center">
+                        <span class="inline-flex items-center text-xs text-gold-400 font-medieval font-semibold">
+                            Читать все новости 
+                            <svg class="w-4 h-4 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+                            </svg>
+                        </span>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-6 px-4 mt-8">
+        <div class="max-w-md mx-auto text-center">
+            <div class="dragon-card rounded-xl p-4">
+                <p class="font-story text-xs text-dragon-300 mb-2">
+                    © 2024 Амулет дракона. Все права защищены.
+                </p>
+                <div class="flex justify-center space-x-4 text-xs">
+                    <a href="#" class="text-gold-500 hover:text-gold-400 transition-colors">Кодекс</a>
+                    <a href="#" class="text-gold-500 hover:text-gold-400 transition-colors">Поддержка</a>
+                    <a href="#" class="text-gold-500 hover:text-gold-400 transition-colors">Арена</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="scripts.js"></script>
+</body>
+</html>

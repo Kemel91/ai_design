@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход в игру - Амулет дракона</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dragon: {
+                            50: '#fafafa',
+                            100: '#f4f4f5',
+                            200: '#e4e4e7',
+                            300: '#d4d4d8',
+                            400: '#a1a1aa',
+                            500: '#71717a',
+                            600: '#52525b',
+                            700: '#3f3f46',
+                            800: '#27272a',
+                            900: '#18181b',
+                        },
+                        blood: {
+                            50: '#fef2f2',
+                            100: '#fee2e2',
+                            200: '#fecaca',
+                            300: '#fca5a5',
+                            400: '#f87171',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            700: '#b91c1c',
+                            800: '#991b1b',
+                            900: '#7f1d1d',
+                        },
+                        gold: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#92400e',
+                            900: '#78350f',
+                        }
+                    },
+                    fontFamily: {
+                        'medieval': ['serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dragon-bg min-h-screen text-white" style="background-color: #0a0a0a !important;">
+    <!-- Header -->
+    <header class="relative py-6 px-4">
+        <div class="max-w-md mx-auto text-center">
+            <div class="mb-4">
+                <a href="index.html" class="inline-block">
+                    <div class="logo-dragon font-medieval text-4xl font-bold mb-2">⚔</div>
+                </a>
+                <h1 class="font-medieval text-2xl font-bold text-glow mb-2">ВХОД В БИТВУ</h1>
+                <div class="h-px bg-gradient-to-r from-transparent via-gold-600 to-transparent mb-2"></div>
+                <p class="font-story text-dragon-300 text-sm">Возвращение в мир приключений</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="px-4 pb-8">
+        <div class="max-w-md mx-auto">
+            
+            <!-- Login Form -->
+            <div class="dragon-card rounded-2xl p-6 glow">
+                <form id="loginForm" class="space-y-6">
+                    
+                    <!-- Login Field (Phone or Nickname) -->
+                    <div>
+                        <label class="block font-medieval text-gold-400 text-sm font-semibold mb-2">
+                            👤 Телефон или имя воина
+                        </label>
+                        <input 
+                            type="text" 
+                            id="loginField"
+                            class="form-input w-full px-4 py-3 rounded-xl font-story text-sm"
+                            placeholder="+7 (999) 123-45-67 или ваш ник"
+                            required
+                        >
+                        <p class="text-xs text-dragon-300 mt-1 font-story">Введите номер телефона или имя персонажа</p>
+                    </div>
+
+                    <!-- Password -->
+                    <div>
+                        <label class="block font-medieval text-gold-400 text-sm font-semibold mb-2">
+                            🛡 Пароль
+                        </label>
+                        <div class="relative">
+                            <input 
+                                type="password" 
+                                id="password"
+                                class="form-input w-full px-4 py-3 rounded-xl font-story text-sm pr-12"
+                                placeholder="Введите пароль"
+                                required
+                            >
+                            <button 
+                                type="button" 
+                                id="togglePassword"
+                                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-dragon-400 hover:text-gold-400 transition-colors"
+                            >
+                                👁
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Remember Me -->
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <input 
+                                type="checkbox" 
+                                id="rememberMe"
+                                class="w-4 h-4 text-gold-600 bg-dragon-800 border-gold-600 rounded focus:ring-gold-500"
+                            >
+                            <label for="rememberMe" class="text-sm text-dragon-200 font-story">
+                                Запомнить меня
+                            </label>
+                        </div>
+                        <a href="#" id="forgotPassword" class="text-sm text-gold-400 hover:text-gold-300 font-story underline">
+                            Забыли пароль?
+                        </a>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button 
+                        type="submit" 
+                        id="submitBtn"
+                        class="w-full btn-dragon rounded-xl py-4 px-6 font-medieval font-semibold text-white shadow-lg"
+                    >
+                        ⚔ ВОЙТИ В БИТВУ
+                    </button>
+
+                </form>
+
+                <!-- Messages -->
+                <div id="messageArea" class="mt-4 space-y-2"></div>
+
+                <!-- Alternative Login Methods -->
+                <div class="mt-6">
+                    <div class="relative">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-dragon-600"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-2 bg-gradient-to-r from-transparent via-dragon-900 to-transparent text-dragon-300 font-story">
+                                или войти через
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4 grid grid-cols-2 gap-3">
+                        <button 
+                            type="button"
+                            class="btn-secondary px-4 py-3 rounded-xl font-medieval text-sm font-semibold text-dragon-200 flex items-center justify-center space-x-2"
+                        >
+                            <span>📱</span>
+                            <span>SMS-код</span>
+                        </button>
+                        <button 
+                            type="button"
+                            class="btn-secondary px-4 py-3 rounded-xl font-medieval text-sm font-semibold text-dragon-200 flex items-center justify-center space-x-2"
+                        >
+                            <span>🔑</span>
+                            <span>Гость</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Registration Link -->
+            <div class="mt-6 text-center">
+                <p class="font-story text-dragon-300 text-sm">
+                    Новый воин? 
+                    <a href="register.html" class="text-gold-400 hover:text-gold-300 font-semibold underline">
+                        Создать персонажа
+                    </a>
+                </p>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="mt-6 dragon-card rounded-xl p-4">
+                <div class="text-center">
+                    <h3 class="font-medieval text-lg font-semibold text-gold-400 mb-3">🏆 СЕГОДНЯ В ИГРЕ</h3>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="text-center">
+                            <div class="text-xl font-bold text-blood-400">847</div>
+                            <div class="text-xs text-dragon-300 font-story">Воинов</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-xl font-bold text-gold-500">23</div>
+                            <div class="text-xs text-dragon-300 font-story">Битв</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-xl font-bold text-blood-400">156</div>
+                            <div class="text-xs text-dragon-300 font-story">Побед</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-6 px-4 mt-8">
+        <div class="max-w-md mx-auto text-center">
+            <div class="dragon-card rounded-xl p-4">
+                <p class="font-story text-xs text-dragon-300 mb-2">
+                    © 2024 Амулет дракона. Все права защищены.
+                </p>
+                <div class="flex justify-center space-x-4 text-xs">
+                    <a href="#" class="text-gold-500 hover:text-gold-400 transition-colors">Кодекс</a>
+                    <a href="#" class="text-gold-500 hover:text-gold-400 transition-colors">Поддержка</a>
+                    <a href="index.html" class="text-gold-500 hover:text-gold-400 transition-colors">Главная</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgotPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="dragon-card rounded-2xl p-6 m-4 max-w-sm w-full">
+            <h3 class="font-medieval text-xl font-semibold text-gold-400 mb-4 text-center">🔐 ВОССТАНОВЛЕНИЕ</h3>
+            <form id="forgotPasswordForm" class="space-y-4">
+                <div>
+                    <label class="block font-medieval text-gold-400 text-sm font-semibold mb-2">
+                        📱 Номер телефона
+                    </label>
+                    <input 
+                        type="tel" 
+                        id="forgotPhone"
+                        class="form-input w-full px-4 py-3 rounded-xl font-story text-sm"
+                        placeholder="+7 (999) 123-45-67"
+                        required
+                    >
+                </div>
+                <div class="flex space-x-3">
+                    <button 
+                        type="submit"
+                        class="flex-1 btn-dragon rounded-xl py-3 px-4 font-medieval font-semibold text-white text-sm"
+                    >
+                        Отправить код
+                    </button>
+                    <button 
+                        type="button"
+                        id="closeForgotModal"
+                        class="flex-1 btn-secondary rounded-xl py-3 px-4 font-medieval font-semibold text-dragon-200 text-sm"
+                    >
+                        Отмена
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="scripts.js"></script>
+    <script>
+        // Login form functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const loginForm = document.getElementById('loginForm');
+            const loginField = document.getElementById('loginField');
+            const passwordField = document.getElementById('password');
+            const togglePassword = document.getElementById('togglePassword');
+            const forgotPasswordLink = document.getElementById('forgotPassword');
+            const forgotPasswordModal = document.getElementById('forgotPasswordModal');
+            const closeForgotModal = document.getElementById('closeForgotModal');
+            const forgotPasswordForm = document.getElementById('forgotPasswordForm');
+            const forgotPhone = document.getElementById('forgotPhone');
+
+            // Auto-format phone number if user starts typing with numbers
+            loginField.addEventListener('input', function(e) {
+                const value = e.target.value;
+                // If starts with numbers, format as phone
+                if (/^\d/.test(value) || value.startsWith('+7') || value.startsWith('8')) {
+                    formatPhoneNumber(e.target);
+                }
+            });
+
+            // Toggle password visibility
+            togglePassword.addEventListener('click', function() {
+                togglePasswordVisibility(passwordField, togglePassword);
+            });
+
+            // Show forgot password modal
+            forgotPasswordLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                forgotPasswordModal.classList.remove('hidden');
+            });
+
+            // Close forgot password modal
+            closeForgotModal.addEventListener('click', function() {
+                forgotPasswordModal.classList.add('hidden');
+            });
+
+            // Close modal on outside click
+            forgotPasswordModal.addEventListener('click', function(e) {
+                if (e.target === forgotPasswordModal) {
+                    forgotPasswordModal.classList.add('hidden');
+                }
+            });
+
+            // Format phone in forgot password modal
+            forgotPhone.addEventListener('input', function(e) {
+                formatPhoneNumber(e.target);
+            });
+
+            // Handle forgot password form
+            forgotPasswordForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const phone = forgotPhone.value;
+                if (phone.length >= 18) {
+                    showMessage('Код восстановления отправлен на ' + phone, 'success');
+                    forgotPasswordModal.classList.add('hidden');
+                } else {
+                    showMessage('Введите корректный номер телефона', 'error');
+                }
+            });
+
+            // Handle login form submission
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const login = loginField.value.trim();
+                const password = passwordField.value;
+                
+                if (!login || !password) {
+                    showMessage('Заполните все поля', 'error');
+                    return;
+                }
+
+                // Simulate login process
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = true;
+                submitBtn.textContent = '🔄 ВХОД В СИСТЕМУ...';
+
+                setTimeout(() => {
+                    // Check if login is phone or nickname
+                    const isPhone = /^\+7 \(\d{3}\) \d{3}-\d{2}-\d{2}$/.test(login);
+                    const isNickname = /^[a-zA-Zа-яА-Я0-9]+$/.test(login) && login.length >= 3;
+                    
+                    if (isPhone || isNickname) {
+                        showMessage('Добро пожаловать в мир Амулета дракона!', 'success');
+                        
+                        setTimeout(() => {
+                            // Redirect to game
+                            window.location.href = 'game.html';
+                        }, 1500);
+                    } else {
+                        showMessage('Неверный формат логина или пароля', 'error');
+                        submitBtn.disabled = false;
+                        submitBtn.textContent = '⚔ ВОЙТИ В БИТВУ';
+                    }
+                }, 1500);
+            });
+
+            // Alternative login methods
+            document.querySelectorAll('.btn-secondary').forEach(button => {
+                button.addEventListener('click', function() {
+                    const method = this.textContent.includes('SMS') ? 'SMS' : 'Гость';
+                    if (method === 'SMS') {
+                        showMessage('Функция входа по SMS в разработке', 'error');
+                    } else {
+                        showMessage('Вход в гостевом режиме...', 'success');
+                        setTimeout(() => {
+                            window.location.href = 'game.html?guest=true';
+                        }, 1500);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

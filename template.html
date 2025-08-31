@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{PAGE_TITLE}} - Амулет дракона</title>
+    <meta name="description" content="{{PAGE_DESCRIPTION}}">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="scripts.js" as="script">
+    <link rel="preload" href="components.js" as="script">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dragon: {
+                            50: '#fafafa', 100: '#f4f4f5', 200: '#e4e4e7', 300: '#d4d4d8',
+                            400: '#a1a1aa', 500: '#71717a', 600: '#52525b', 700: '#3f3f46',
+                            800: '#27272a', 900: '#18181b',
+                        },
+                        blood: {
+                            50: '#fef2f2', 100: '#fee2e2', 200: '#fecaca', 300: '#fca5a5',
+                            400: '#f87171', 500: '#ef4444', 600: '#dc2626', 700: '#b91c1c',
+                            800: '#991b1b', 900: '#7f1d1d',
+                        },
+                        gold: {
+                            50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d',
+                            400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309',
+                            800: '#92400e', 900: '#78350f',
+                        }
+                    },
+                    fontFamily: { 'medieval': ['serif'] },
+                    screens: {
+                        'xs': '475px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Page-specific styles -->
+    <style>
+        /* Add page-specific CSS here */
+    </style>
+</head>
+<body class="dragon-bg min-h-screen text-white" style="background-color: #0a0a0a !important;">
+    
+    <!-- Header -->
+    <div id="header-placeholder" 
+         data-title="{{PAGE_TITLE}}" 
+         data-subtitle="{{PAGE_SUBTITLE}}" 
+         data-show-back="{{SHOW_BACK_BUTTON}}">
+    </div>
+    
+    <!-- Breadcrumbs (optional) -->
+    <!-- <div id="breadcrumbs-placeholder"></div> -->
+    
+    <!-- Main Content -->
+    <main class="px-4 pb-8">
+        <div class="max-w-4xl mx-auto">
+            
+            <!-- Page Content Goes Here -->
+            <div class="space-y-6">
+                
+                <!-- Example content card -->
+                <div class="dragon-card rounded-2xl p-4 sm:p-6 glow">
+                    <h2 class="font-medieval text-xl font-semibold text-gold-400 mb-4">
+                        Заголовок контента
+                    </h2>
+                    <p class="font-story text-dragon-200 text-sm leading-relaxed">
+                        Здесь размещается основной контент страницы...
+                    </p>
+                </div>
+                
+            </div>
+            
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <div id="footer-placeholder"></div>
+    
+    <!-- Modals (if needed) -->
+    <!-- <div id="modal-placeholder"></div> -->
+    
+    <!-- Scripts -->
+    <script src="scripts.js"></script>
+    <script src="components.js"></script>
+    
+    <!-- Page-specific JavaScript -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Page-specific initialization code here
+            console.log('{{PAGE_TITLE}} page loaded');
+        });
+    </script>
+    
+</body>
+</html>

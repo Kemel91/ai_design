@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация - Амулет дракона</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dragon: {
+                            50: '#fafafa',
+                            100: '#f4f4f5',
+                            200: '#e4e4e7',
+                            300: '#d4d4d8',
+                            400: '#a1a1aa',
+                            500: '#71717a',
+                            600: '#52525b',
+                            700: '#3f3f46',
+                            800: '#27272a',
+                            900: '#18181b',
+                        },
+                        blood: {
+                            50: '#fef2f2',
+                            100: '#fee2e2',
+                            200: '#fecaca',
+                            300: '#fca5a5',
+                            400: '#f87171',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            700: '#b91c1c',
+                            800: '#991b1b',
+                            900: '#7f1d1d',
+                        },
+                        gold: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#92400e',
+                            900: '#78350f',
+                        }
+                    },
+                    fontFamily: {
+                        'medieval': ['serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dragon-bg min-h-screen text-white" style="background-color: #0a0a0a !important;">
+    <!-- Header -->
+    <header class="relative py-6 px-4">
+        <div class="max-w-md mx-auto text-center">
+            <div class="mb-4">
+                <a href="index.html" class="inline-block">
+                    <div class="logo-dragon font-medieval text-4xl font-bold mb-2">⚔</div>
+                </a>
+                <h1 class="font-medieval text-2xl font-bold text-glow mb-2">РЕГИСТРАЦИЯ ВОИНА</h1>
+                <div class="h-px bg-gradient-to-r from-transparent via-gold-600 to-transparent mb-2"></div>
+                <p class="font-story text-dragon-300 text-sm">Создание нового персонажа</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="px-4 pb-8">
+        <div class="max-w-md mx-auto">
+            
+            <!-- Registration Form -->
+            <div class="dragon-card rounded-2xl p-6 glow">
+                <form id="registrationForm" class="space-y-6">
+                    
+                    <!-- Phone Number Section -->
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block font-medieval text-gold-400 text-sm font-semibold mb-2">
+                                📱 Номер телефона
+                            </label>
+                            <input 
+                                type="tel" 
+                                id="phoneNumber"
+                                class="form-input w-full px-4 py-3 rounded-xl font-story text-sm"
+                                placeholder="+7 (999) 123-45-67"
+                                required
+                            >
+                            <p class="text-xs text-dragon-300 mt-1 font-story">Используется для подтверждения и восстановления</p>
+                        </div>
+                        
+                        <!-- Phone Verification -->
+                        <div id="verificationSection" class="hidden">
+                            <label class="block font-medieval text-blood-400 text-sm font-semibold mb-2">
+                                🔐 Код подтверждения
+                            </label>
+                            <div class="flex space-x-2">
+                                <input 
+                                    type="text" 
+                                    id="verificationCode"
+                                    class="verification-code flex-1 px-4 py-3 rounded-xl font-story text-sm text-center"
+                                    placeholder="123456"
+                                    maxlength="6"
+                                >
+                                <button 
+                                    type="button" 
+                                    id="sendCodeBtn"
+                                    class="btn-secondary px-4 py-3 rounded-xl font-medieval text-xs font-semibold text-dragon-200"
+                                >
+                                    Отправить
+                                </button>
+                            </div>
+                            <p class="text-xs text-dragon-300 mt-1 font-story">Код отправлен на ваш номер</p>
+                        </div>
+                    </div>
+
+                    <!-- Nickname -->
+                    <div>
+                        <label class="block font-medieval text-gold-400 text-sm font-semibold mb-2">
+                            ⚔ Имя воина
+                        </label>
+                        <input 
+                            type="text" 
+                            id="nickname"
+                            class="form-input w-full px-4 py-3 rounded-xl font-story text-sm"
+                            placeholder="Введите ваш ник"
+                            required
+                            minlength="3"
+                            maxlength="20"
+                        >
+                        <p class="text-xs text-dragon-300 mt-1 font-story">От 3 до 20 символов, только буквы и цифры</p>
+                    </div>
+
+                    <!-- Password -->
+                    <div>
+                        <label class="block font-medieval text-gold-400 text-sm font-semibold mb-2">
+                            🛡 Пароль
+                        </label>
+                        <div class="relative">
+                            <input 
+                                type="password" 
+                                id="password"
+                                class="form-input w-full px-4 py-3 rounded-xl font-story text-sm pr-12"
+                                placeholder="Минимум 8 символов"
+                                required
+                                minlength="8"
+                            >
+                            <button 
+                                type="button" 
+                                id="togglePassword"
+                                class="absolute right-3 top-1/2 transform -translate-y-1/2 text-dragon-400 hover:text-gold-400 transition-colors"
+                            >
+                                👁
+                            </button>
+                        </div>
+                        <div class="mt-2 space-y-1">
+                            <div id="passwordStrength" class="h-2 bg-dragon-800 rounded-full overflow-hidden">
+                                <div id="strengthBar" class="h-full transition-all duration-300 rounded-full"></div>
+                            </div>
+                            <p id="strengthText" class="text-xs text-dragon-300 font-story">Введите пароль</p>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Password -->
+                    <div>
+                        <label class="block font-medieval text-gold-400 text-sm font-semibold mb-2">
+                            🔒 Подтверждение пароля
+                        </label>
+                        <input 
+                            type="password" 
+                            id="confirmPassword"
+                            class="form-input w-full px-4 py-3 rounded-xl font-story text-sm"
+                            placeholder="Повторите пароль"
+                            required
+                        >
+                        <div id="passwordMatch" class="mt-1 text-xs font-story hidden">
+                            <span id="matchText"></span>
+                        </div>
+                    </div>
+
+                    <!-- Agreement -->
+                    <div class="flex items-start space-x-3">
+                        <input 
+                            type="checkbox" 
+                            id="agreement"
+                            class="mt-1 w-4 h-4 text-gold-600 bg-dragon-800 border-gold-600 rounded focus:ring-gold-500"
+                            required
+                        >
+                        <label for="agreement" class="text-xs text-dragon-200 font-story leading-relaxed">
+                            Я принимаю <a href="#" class="text-gold-400 hover:text-gold-300 underline">Кодекс воина</a> и соглашаюсь с <a href="#" class="text-gold-400 hover:text-gold-300 underline">правилами игры</a>
+                        </label>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button 
+                        type="submit" 
+                        id="submitBtn"
+                        class="w-full btn-dragon rounded-xl py-4 px-6 font-medieval font-semibold text-white shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled
+                    >
+                        ⚔ ВСТУПИТЬ В БИТВУ
+                    </button>
+
+                </form>
+
+                <!-- Messages -->
+                <div id="messageArea" class="mt-4 space-y-2"></div>
+            </div>
+
+            <!-- Login Link -->
+            <div class="mt-6 text-center">
+                <p class="font-story text-dragon-300 text-sm">
+                    Уже есть персонаж? 
+                    <a href="login.html" class="text-gold-400 hover:text-gold-300 font-semibold underline">
+                        Войти в игру
+                    </a>
+                </p>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-6 px-4 mt-8">
+        <div class="max-w-md mx-auto text-center">
+            <div class="dragon-card rounded-xl p-4">
+                <p class="font-story text-xs text-dragon-300 mb-2">
+                    © 2024 Амулет дракона. Все права защищены.
+                </p>
+                <div class="flex justify-center space-x-4 text-xs">
+                    <a href="#" class="text-gold-500 hover:text-gold-400 transition-colors">Кодекс</a>
+                    <a href="#" class="text-gold-500 hover:text-gold-400 transition-colors">Поддержка</a>
+                    <a href="index.html" class="text-gold-500 hover:text-gold-400 transition-colors">Главная</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="scripts.js"></script>
+    <script>
+        // Phone number formatting
+        document.getElementById('phoneNumber').addEventListener('input', function(e) {
+            const isComplete = formatPhoneNumber(e.target);
+            
+            // Show verification section when phone is complete
+            if (isComplete) {
+                document.getElementById('verificationSection').classList.remove('hidden');
+            } else {
+                document.getElementById('verificationSection').classList.add('hidden');
+            }
+        });
+
+        // Send verification code
+        document.getElementById('sendCodeBtn').addEventListener('click', function() {
+            const phoneNumber = document.getElementById('phoneNumber').value;
+            if (phoneNumber.length >= 18) {
+                showMessage('Код отправлен на ' + phoneNumber, 'success');
+                this.textContent = 'Отправлено';
+                this.disabled = true;
+                
+                // Re-enable after 60 seconds
+                setTimeout(() => {
+                    this.textContent = 'Повторить';
+                    this.disabled = false;
+                }, 60000);
+            }
+        });
+
+        // Password strength checker
+        document.getElementById('password').addEventListener('input', function(e) {
+            const password = e.target.value;
+            const strengthBar = document.getElementById('strengthBar');
+            const strengthText = document.getElementById('strengthText');
+            
+            updatePasswordStrength(password, strengthBar, strengthText);
+            checkFormValidity();
+        });
+
+        // Password confirmation
+        document.getElementById('confirmPassword').addEventListener('input', function(e) {
+            const password = document.getElementById('password').value;
+            const confirmPassword = e.target.value;
+            const matchDiv = document.getElementById('passwordMatch');
+            const matchText = document.getElementById('matchText');
+            
+            checkPasswordMatch(password, confirmPassword, matchDiv, matchText);
+            checkFormValidity();
+        });
+
+        // Toggle password visibility
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            togglePasswordVisibility(passwordInput, this);
+        });
+
+        // Check form validity
+        function checkFormValidity() {
+            const phone = document.getElementById('phoneNumber').value;
+            const nickname = document.getElementById('nickname').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const agreement = document.getElementById('agreement').checked;
+            const verificationCode = document.getElementById('verificationCode').value;
+            
+            const isValid = phone.length >= 18 && 
+                           verificationCode.length === 6 &&
+                           nickname.length >= 3 && 
+                           password.length >= 8 && 
+                           password === confirmPassword && 
+                           agreement;
+            
+            document.getElementById('submitBtn').disabled = !isValid;
+        }
+
+        // Form submission
+        document.getElementById('registrationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showMessage('Регистрация успешно завершена! Добро пожаловать в мир Амулета дракона!', 'success');
+            
+            setTimeout(() => {
+                // Redirect to game or login page
+                window.location.href = 'game.html';
+            }, 2000);
+        });
+
+        // Add event listeners for form validation
+        ['phoneNumber', 'nickname', 'confirmPassword', 'agreement', 'verificationCode'].forEach(id => {
+            document.getElementById(id).addEventListener('input', checkFormValidity);
+            document.getElementById(id).addEventListener('change', checkFormValidity);
+        });
+
+        // showMessage function is now in scripts.js
+
+        // Ripple effect is now handled in scripts.js
+    </script>
+</body>
+</html>

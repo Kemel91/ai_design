@@ -1,0 +1,238 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap');
+
+/* Fonts */
+.font-medieval { font-family: 'Cinzel', serif; }
+.font-story { font-family: 'Crimson Text', serif; }
+
+/* Background */
+.dragon-bg {
+    background-color: #0a0a0a !important;
+    background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 25%, #2d2d2d 50%, #1a1a1a 75%, #0a0a0a 100%) !important;
+    background-attachment: fixed;
+    background-image: 
+        radial-gradient(circle at 20% 50%, rgba(220, 38, 38, 0.15) 0%, transparent 60%),
+        radial-gradient(circle at 80% 20%, rgba(245, 158, 11, 0.08) 0%, transparent 60%),
+        radial-gradient(circle at 40% 80%, rgba(127, 29, 29, 0.12) 0%, transparent 60%);
+}
+
+/* Cards */
+.dragon-card {
+    background: linear-gradient(145deg, rgba(20, 20, 25, 0.98), rgba(10, 10, 15, 0.95)) !important;
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(245, 158, 11, 0.3);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Effects */
+.glow {
+    box-shadow: 0 0 30px rgba(220, 38, 38, 0.2);
+}
+
+.text-glow {
+    text-shadow: 0 0 20px rgba(245, 158, 11, 0.6), 0 0 40px rgba(245, 158, 11, 0.3);
+    color: #fbbf24 !important;
+}
+
+/* Buttons */
+.btn-dragon {
+    background: linear-gradient(45deg, #7f1d1d, #991b1b, #b91c1c);
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(127, 29, 29, 0.4);
+}
+
+.btn-dragon:hover {
+    background: linear-gradient(45deg, #991b1b, #b91c1c, #dc2626);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(185, 28, 28, 0.5);
+}
+
+.btn-secondary {
+    background: linear-gradient(45deg, rgba(39, 39, 42, 0.8), rgba(63, 63, 70, 0.8));
+    border: 1px solid rgba(245, 158, 11, 0.4);
+    transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+    background: linear-gradient(45deg, rgba(63, 63, 70, 0.9), rgba(82, 82, 91, 0.9));
+    border-color: rgba(245, 158, 11, 0.6);
+    transform: translateY(-2px);
+}
+
+/* Animations */
+.animate-float {
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-10px); }
+}
+
+/* Logo */
+.logo-dragon {
+    background: linear-gradient(45deg, #d97706, #f59e0b, #fbbf24);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 8px rgba(217, 119, 6, 0.3));
+}
+
+.professional-icon {
+    background: linear-gradient(45deg, #7f1d1d, #b91c1c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* Form Elements */
+.form-input {
+    background: linear-gradient(145deg, rgba(20, 20, 25, 0.9), rgba(39, 39, 42, 0.8));
+    border: 2px solid rgba(245, 158, 11, 0.2);
+    color: #ffffff;
+    transition: all 0.3s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: rgba(245, 158, 11, 0.6);
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.2);
+}
+
+.form-input::placeholder {
+    color: rgba(212, 212, 216, 0.6);
+}
+
+.verification-code {
+    background: linear-gradient(145deg, rgba(127, 29, 29, 0.3), rgba(185, 28, 28, 0.2));
+    border: 2px solid rgba(220, 38, 38, 0.4);
+}
+
+.verification-code:focus {
+    border-color: rgba(220, 38, 38, 0.8);
+    box-shadow: 0 0 20px rgba(220, 38, 38, 0.3);
+}
+
+/* Messages */
+.success-message {
+    background: linear-gradient(145deg, rgba(34, 197, 94, 0.2), rgba(22, 163, 74, 0.1));
+    border: 1px solid rgba(34, 197, 94, 0.4);
+    color: #86efac;
+}
+
+.error-message {
+    background: linear-gradient(145deg, rgba(239, 68, 68, 0.2), rgba(220, 38, 38, 0.1));
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+}
+
+/* Base styles */
+html, body {
+    background-color: #0a0a0a !important;
+    color: #ffffff !important;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+/* Mobile-first responsive improvements */
+@media (max-width: 768px) {
+    .dragon-card {
+        margin: 0 0.5rem;
+    }
+    
+    .font-medieval {
+        line-height: 1.2;
+    }
+    
+    /* Smaller text on mobile */
+    .mobile-text-sm {
+        font-size: 0.875rem;
+    }
+    
+    /* Better button spacing on mobile */
+    .mobile-btn-spacing {
+        margin-bottom: 0.75rem;
+    }
+    
+    /* Improved form inputs on mobile */
+    .form-input {
+        font-size: 16px; /* Prevents zoom on iOS */
+    }
+    
+    /* Better pagination on mobile */
+    .pagination-mobile {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    /* Extra small screens */
+    .dragon-card {
+        padding: 1rem;
+        margin: 0 0.25rem;
+    }
+    
+    .logo-dragon {
+        font-size: 2.5rem;
+    }
+    
+    .text-glow {
+        font-size: 1.5rem;
+    }
+}
+
+/* Touch improvements */
+@media (hover: none) and (pointer: coarse) {
+    .btn-dragon:hover,
+    .btn-secondary:hover {
+        transform: none;
+    }
+    
+    .news-card:hover {
+        transform: none;
+    }
+    
+    /* Larger touch targets */
+    button, a {
+        min-height: 44px;
+        min-width: 44px;
+    }
+}
+
+/* High DPI screens */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+    .text-glow {
+        text-shadow: 
+            0 0 10px rgba(245, 158, 11, 0.6), 
+            0 0 20px rgba(245, 158, 11, 0.3),
+            0 0 30px rgba(245, 158, 11, 0.1);
+    }
+}
+
+/* Dark mode support (already dark, but for future) */
+@media (prefers-color-scheme: dark) {
+    /* Already optimized for dark theme */
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .animate-float {
+        animation: none;
+    }
+    
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* Ripple animation */
+@keyframes ripple {
+    to {
+        transform: scale(4);
+        opacity: 0;
+    }
+}

@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Хроники войны - Амулет дракона</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dragon: {
+                            50: '#fafafa',
+                            100: '#f4f4f5',
+                            200: '#e4e4e7',
+                            300: '#d4d4d8',
+                            400: '#a1a1aa',
+                            500: '#71717a',
+                            600: '#52525b',
+                            700: '#3f3f46',
+                            800: '#27272a',
+                            900: '#18181b',
+                        },
+                        blood: {
+                            50: '#fef2f2',
+                            100: '#fee2e2',
+                            200: '#fecaca',
+                            300: '#fca5a5',
+                            400: '#f87171',
+                            500: '#ef4444',
+                            600: '#dc2626',
+                            700: '#b91c1c',
+                            800: '#991b1b',
+                            900: '#7f1d1d',
+                        },
+                        gold: {
+                            50: '#fffbeb',
+                            100: '#fef3c7',
+                            200: '#fde68a',
+                            300: '#fcd34d',
+                            400: '#fbbf24',
+                            500: '#f59e0b',
+                            600: '#d97706',
+                            700: '#b45309',
+                            800: '#92400e',
+                            900: '#78350f',
+                        }
+                    },
+                    fontFamily: {
+                        'medieval': ['serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .news-card {
+            transition: all 0.3s ease;
+        }
+        
+        .news-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(220, 38, 38, 0.3);
+        }
+        
+        .news-category {
+            background: linear-gradient(45deg, rgba(127, 29, 29, 0.8), rgba(185, 28, 28, 0.6));
+            border: 1px solid rgba(220, 38, 38, 0.4);
+        }
+        
+        .news-date {
+            color: #d97706;
+        }
+        
+        .pagination-btn {
+            background: linear-gradient(45deg, rgba(39, 39, 42, 0.8), rgba(63, 63, 70, 0.8));
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .pagination-btn:hover {
+            border-color: rgba(245, 158, 11, 0.6);
+            background: linear-gradient(45deg, rgba(63, 63, 70, 0.9), rgba(82, 82, 91, 0.9));
+            transform: translateY(-2px);
+        }
+        
+        .pagination-btn.active {
+            background: linear-gradient(45deg, #7f1d1d, #991b1b);
+            border-color: rgba(185, 28, 28, 0.8);
+            color: #ffffff;
+        }
+        
+        .news-content {
+            display: none;
+        }
+        
+        .news-content.active {
+            display: block;
+        }
+        
+        .breaking-news {
+            background: linear-gradient(45deg, rgba(220, 38, 38, 0.2), rgba(127, 29, 29, 0.1));
+            border-left: 4px solid #dc2626;
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { 
+                box-shadow: 0 0 20px rgba(220, 38, 38, 0.3);
+            }
+            50% { 
+                box-shadow: 0 0 30px rgba(220, 38, 38, 0.5);
+            }
+        }
+    </style>
+</head>
+<body class="dragon-bg min-h-screen text-white" style="background-color: #0a0a0a !important;">
+    <!-- Header -->
+    <header class="relative py-6 px-4">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="mb-4">
+                <a href="index.html" class="inline-block">
+                    <div class="logo-dragon font-medieval text-4xl font-bold mb-2">⚔</div>
+                </a>
+                <h1 class="font-medieval text-3xl font-bold text-glow mb-2">ХРОНИКИ ВОЙНЫ</h1>
+                <div class="h-px bg-gradient-to-r from-transparent via-gold-600 to-transparent mb-2"></div>
+                <p class="font-story text-dragon-300 text-sm">Последние события из мира Амулета дракона</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="px-4 pb-8">
+        <div class="max-w-4xl mx-auto">
+            
+            <!-- Breaking News -->
+            <div class="breaking-news dragon-card rounded-2xl p-6 mb-8">
+                <div class="flex items-center mb-3">
+                    <span class="text-2xl mr-3">🔥</span>
+                    <h2 class="font-medieval text-xl font-bold text-blood-400">СРОЧНЫЕ НОВОСТИ</h2>
+                </div>
+                <h3 class="font-medieval text-lg font-semibold text-gold-400 mb-2">
+                    Древний дракон Валгарион пробудился в Проклятых землях!
+                </h3>
+                <p class="font-story text-dragon-200 text-sm leading-relaxed">
+                    Впервые за 500 лет легендарный черный дракон покинул свое логово. Все воины 50+ уровня призываются к участию в эпической битве. Награда за участие - уникальные артефакты драконьей силы.
+                </p>
+            </div>
+
+            <!-- News Categories Filter -->
+            <div class="mb-6">
+                <div class="flex flex-wrap gap-2 justify-center px-2">
+                    <button class="category-filter px-3 sm:px-4 py-2 rounded-xl font-medieval text-xs sm:text-sm font-semibold text-dragon-200 news-category active min-h-[44px]" data-category="all">
+                        Все новости
+                    </button>
+                    <button class="category-filter px-3 sm:px-4 py-2 rounded-xl font-medieval text-xs sm:text-sm font-semibold text-dragon-200 pagination-btn min-h-[44px]" data-category="updates">
+                        Обновления
+                    </button>
+                    <button class="category-filter px-3 sm:px-4 py-2 rounded-xl font-medieval text-xs sm:text-sm font-semibold text-dragon-200 pagination-btn min-h-[44px]" data-category="events">
+                        События
+                    </button>
+                    <button class="category-filter px-3 sm:px-4 py-2 rounded-xl font-medieval text-xs sm:text-sm font-semibold text-dragon-200 pagination-btn min-h-[44px]" data-category="pvp">
+                        PvP
+                    </button>
+                    <button class="category-filter px-3 sm:px-4 py-2 rounded-xl font-medieval text-xs sm:text-sm font-semibold text-dragon-200 pagination-btn min-h-[44px]" data-category="guilds">
+                        Кланы
+                    </button>
+                </div>
+            </div>
+
+            <!-- News Content Pages -->
+            <div id="page1" class="news-content active">
+                <div class="grid gap-4 sm:gap-6 sm:grid-cols-1 md:grid-cols-2">
+                    
+                    <!-- News Item 1 -->
+                    <article class="news-card dragon-card rounded-2xl p-6" data-category="updates">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="news-category px-3 py-1 rounded-full font-medieval text-xs font-semibold">
+                                ОБНОВЛЕНИЕ
+                            </span>
+                            <span class="news-date font-story text-xs">3 часа назад</span>
+                        </div>
+                        <h3 class="font-medieval text-lg font-semibold text-gold-400 mb-3">
+                            🏰 Новая локация "Башня Теней"
+                        </h3>
+                        <p class="font-story text-dragon-200 text-sm leading-relaxed mb-4">
+                            Открыта мрачная башня с 50 уровнями испытаний. Каждый этаж таит в себе смертельные ловушки и могущественных стражей. Лишь самые отважные воины смогут достичь вершины и получить легендарный артефакт "Плащ Ночи".
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-dragon-300">
+                            <span>👥 847 воинов уже вступили в битву</span>
+                            <span>⚔ Сложность: Экстремальная</span>
+                        </div>
+                    </article>
+
+                    <!-- News Item 2 -->
+                    <article class="news-card dragon-card rounded-2xl p-6" data-category="events">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="news-category px-3 py-1 rounded-full font-medieval text-xs font-semibold">
+                                СОБЫТИЕ
+                            </span>
+                            <span class="news-date font-story text-xs">6 часов назад</span>
+                        </div>
+                        <h3 class="font-medieval text-lg font-semibold text-gold-400 mb-3">
+                            🌙 Фестиваль Кровавой Луны
+                        </h3>
+                        <p class="font-story text-dragon-200 text-sm leading-relaxed mb-4">
+                            С 15 по 22 число действует особое событие. В эти дни монстры становятся сильнее, но дают в 3 раза больше опыта и золота. Также появляются редкие боссы с уникальными дропами. Не упустите шанс быстро прокачаться!
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-dragon-300">
+                            <span>🎁 +300% к опыту и золоту</span>
+                            <span>⏰ Осталось 5 дней</span>
+                        </div>
+                    </article>
+
+                    <!-- News Item 3 -->
+                    <article class="news-card dragon-card rounded-2xl p-6" data-category="pvp">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="news-category px-3 py-1 rounded-full font-medieval text-xs font-semibold">
+                                PVP
+                            </span>
+                            <span class="news-date font-story text-xs">12 часов назад</span>
+                        </div>
+                        <h3 class="font-medieval text-lg font-semibold text-gold-400 mb-3">
+                            ⚔ Турнир "Железный Кулак" завершен
+                        </h3>
+                        <p class="font-story text-dragon-200 text-sm leading-relaxed mb-4">
+                            Поздравляем победителей! 1 место - воин "Кровавый Клинок" из клана "Стальные Волки". 2 место - "Теневой Убийца" из "Братства Ночи". 3 место - "Огненная Валькирия" из "Драконьих Когтей". Следующий турнир через месяц!
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-dragon-300">
+                            <span>🏆 256 участников сражались</span>
+                            <span>💰 Призовой фонд: 50,000 золота</span>
+                        </div>
+                    </article>
+
+                    <!-- News Item 4 -->
+                    <article class="news-card dragon-card rounded-2xl p-6" data-category="guilds">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="news-category px-3 py-1 rounded-full font-medieval text-xs font-semibold">
+                                КЛАНЫ
+                            </span>
+                            <span class="news-date font-story text-xs">1 день назад</span>
+                        </div>
+                        <h3 class="font-medieval text-lg font-semibold text-gold-400 mb-3">
+                            🛡 Война кланов: "Стальные Волки" vs "Черные Драконы"
+                        </h3>
+                        <p class="font-story text-dragon-200 text-sm leading-relaxed mb-4">
+                            Началась эпическая война между двумя сильнейшими кланами сервера. На кону контроль над крепостью "Железная Цитадель" и ее богатые рудники. Битвы проходят каждый день в 20:00 по серверному времени.
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-dragon-300">
+                            <span>⚔ Счет: Волки 3 - 2 Драконы</span>
+                            <span>🏰 За контроль над цитаделью</span>
+                        </div>
+                    </article>
+
+                    <!-- News Item 5 -->
+                    <article class="news-card dragon-card rounded-2xl p-6" data-category="updates">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="news-category px-3 py-1 rounded-full font-medieval text-xs font-semibold">
+                                ОБНОВЛЕНИЕ
+                            </span>
+                            <span class="news-date font-story text-xs">2 дня назад</span>
+                        </div>
+                        <h3 class="font-medieval text-lg font-semibold text-gold-400 mb-3">
+                            🔮 Новая школа магии - Некромантия
+                        </h3>
+                        <p class="font-story text-dragon-200 text-sm leading-relaxed mb-4">
+                            Темные маги теперь могут изучать запретные заклинания смерти. Поднимайте скелетов-воинов, призывайте духов и высасывайте жизненную силу врагов. Будьте осторожны - некромантия требует жертв...
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-dragon-300">
+                            <span>💀 15 новых заклинаний</span>
+                            <span>⚠ Требует 40+ уровень</span>
+                        </div>
+                    </article>
+
+                    <!-- News Item 6 -->
+                    <article class="news-card dragon-card rounded-2xl p-6" data-category="events">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="news-category px-3 py-1 rounded-full font-medieval text-xs font-semibold">
+                                СОБЫТИЕ
+                            </span>
+                            <span class="news-date font-story text-xs">3 дня назад</span>
+                        </div>
+                        <h3 class="font-medieval text-lg font-semibold text-gold-400 mb-3">
+                            🎭 Карнавал Масок в городе Элдорадо
+                        </h3>
+                        <p class="font-story text-dragon-200 text-sm leading-relaxed mb-4">
+                            Неделя веселья и развлечений! Участвуйте в конкурсах, выигрывайте призы, покупайте уникальные костюмы и маски. Особый квест "Тайна Золотой Маски" доступен только во время карнавала.
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-dragon-300">
+                            <span>🎪 12 различных активностей</span>
+                            <span>🎁 Эксклюзивные награды</span>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+
+            <!-- Page 2 -->
+            <div id="page2" class="news-content">
+                <div class="grid gap-4 sm:gap-6 sm:grid-cols-1 md:grid-cols-2">
+                    
+                    <!-- News Item 7 -->
+                    <article class="news-card dragon-card rounded-2xl p-6" data-category="updates">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="news-category px-3 py-1 rounded-full font-medieval text-xs font-semibold">
+                                ОБНОВЛЕНИЕ
+                            </span>
+                            <span class="news-date font-story text-xs">4 дня назад</span>
+                        </div>
+                        <h3 class="font-medieval text-lg font-semibold text-gold-400 mb-3">
+                            🐉 Система приручения драконов
+                        </h3>
+                        <p class="font-story text-dragon-200 text-sm leading-relaxed mb-4">
+                            Теперь опытные воины могут приручать молодых драконов! Найдите драконье яйцо, высидите его и вырастите верного спутника. Каждый дракон уникален и обладает особыми способностями в зависимости от его породы.
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-dragon-300">
+                            <span>🥚 7 видов драконов</span>
+                            <span>⭐ Требует 60+ уровень</span>
+                        </div>
+                    </article>
+
+                    <!-- News Item 8 -->
+                    <article class="news-card dragon-card rounded-2xl p-6" data-category="pvp">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="news-category px-3 py-1 rounded-full font-medieval text-xs font-semibold">
+                                PVP
+                            </span>
+                            <span class="news-date font-story text-xs">5 дней назад</span>
+                        </div>
+                        <h3 class="font-medieval text-lg font-semibold text-gold-400 mb-3">
+                            ⚡ Арена Молний - новый PvP режим
+                        </h3>
+                        <p class="font-story text-dragon-200 text-sm leading-relaxed mb-4">
+                            Быстрые 1v1 поединки в электрифицированной арене! Каждые 30 секунд случайные молнии поражают части арены. Адаптируйтесь к изменяющимся условиям и побеждайте противников тактикой и скоростью.
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-dragon-300">
+                            <span>⚡ Динамическая арена</span>
+                            <span>🏅 Рейтинговые бои</span>
+                        </div>
+                    </article>
+
+                    <!-- News Item 9 -->
+                    <article class="news-card dragon-card rounded-2xl p-6" data-category="guilds">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="news-category px-3 py-1 rounded-full font-medieval text-xs font-semibold">
+                                КЛАНЫ
+                            </span>
+                            <span class="news-date font-story text-xs">6 дней назад</span>
+                        </div>
+                        <h3 class="font-medieval text-lg font-semibold text-gold-400 mb-3">
+                            🏛 Клан "Храм Феникса" достиг максимального уровня
+                        </h3>
+                        <p class="font-story text-dragon-200 text-sm leading-relaxed mb-4">
+                            Первый клан на сервере, достигший 10 уровня! Это открывает доступ к эксклюзивным клановым заклинаниям, уникальным квестам и возможности построить собственную крепость. Поздравляем с историческим достижением!
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-dragon-300">
+                            <span>🎯 50 активных участников</span>
+                            <span>🏰 Строительство крепости</span>
+                        </div>
+                    </article>
+
+                    <!-- News Item 10 -->
+                    <article class="news-card dragon-card rounded-2xl p-6" data-category="events">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="news-category px-3 py-1 rounded-full font-medieval text-xs font-semibold">
+                                СОБЫТИЕ
+                            </span>
+                            <span class="news-date font-story text-xs">1 неделя назад</span>
+                        </div>
+                        <h3 class="font-medieval text-lg font-semibold text-gold-400 mb-3">
+                            🌊 Нашествие морских чудовищ
+                        </h3>
+                        <p class="font-story text-dragon-200 text-sm leading-relaxed mb-4">
+                            Берега континента атакуют древние твари из глубин океана! Кракены, морские змеи и армии мурлоков угрожают прибрежным городам. Объединяйтесь для защиты торговых путей и получайте морские сокровища.
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-dragon-300">
+                            <span>🐙 15 видов морских монстров</span>
+                            <span>💎 Редкие морские артефакты</span>
+                        </div>
+                    </article>
+
+                    <!-- News Item 11 -->
+                    <article class="news-card dragon-card rounded-2xl p-6" data-category="updates">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="news-category px-3 py-1 rounded-full font-medieval text-xs font-semibold">
+                                ОБНОВЛЕНИЕ
+                            </span>
+                            <span class="news-date font-story text-xs">1 неделя назад</span>
+                        </div>
+                        <h3 class="font-medieval text-lg font-semibold text-gold-400 mb-3">
+                            🔨 Система крафта легендарных предметов
+                        </h3>
+                        <p class="font-story text-dragon-200 text-sm leading-relaxed mb-4">
+                            Мастера-кузнецы теперь могут создавать легендарное оружие и доспехи! Собирайте редкие материалы, изучайте древние чертежи и создавайте предметы невиданной силы. Каждый легендарный предмет уникален.
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-dragon-300">
+                            <span>⚒ 25 легендарных чертежей</span>
+                            <span>💎 Требует редкие материалы</span>
+                        </div>
+                    </article>
+
+                    <!-- News Item 12 -->
+                    <article class="news-card dragon-card rounded-2xl p-6" data-category="pvp">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="news-category px-3 py-1 rounded-full font-medieval text-xs font-semibold">
+                                PVP
+                            </span>
+                            <span class="news-date font-story text-xs">1 неделя назад</span>
+                        </div>
+                        <h3 class="font-medieval text-lg font-semibold text-gold-400 mb-3">
+                            🏺 Битва за Древний Артефакт
+                        </h3>
+                        <p class="font-story text-dragon-200 text-sm leading-relaxed mb-4">
+                            Раз в месяц появляется портал к Древнему Храму, где хранится могущественный артефакт. Только один клан сможет завладеть им! Массовые PvP сражения до 100 игроков одновременно за право обладать реликвией.
+                        </p>
+                        <div class="flex items-center justify-between text-xs text-dragon-300">
+                            <span>⚔ До 100 воинов в битве</span>
+                            <span>🏆 Один победитель в месяц</span>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <div class="mt-8 flex flex-wrap justify-center items-center gap-2 px-2">
+                <button class="pagination-btn px-3 sm:px-4 py-2 rounded-xl font-medieval font-semibold text-dragon-200 text-xs sm:text-sm min-h-[44px]" id="prevBtn" disabled>
+                    <span class="hidden sm:inline">← Предыдущая</span>
+                    <span class="sm:hidden">←</span>
+                </button>
+                
+                <div class="flex gap-2">
+                    <button class="pagination-btn active px-3 sm:px-4 py-2 rounded-xl font-medieval font-semibold text-xs sm:text-sm min-h-[44px]" data-page="1">
+                        1
+                    </button>
+                    <button class="pagination-btn px-3 sm:px-4 py-2 rounded-xl font-medieval font-semibold text-dragon-200 text-xs sm:text-sm min-h-[44px]" data-page="2">
+                        2
+                    </button>
+                </div>
+                
+                <button class="pagination-btn px-3 sm:px-4 py-2 rounded-xl font-medieval font-semibold text-dragon-200 text-xs sm:text-sm min-h-[44px]" id="nextBtn">
+                    <span class="hidden sm:inline">Следующая →</span>
+                    <span class="sm:hidden">→</span>
+                </button>
+            </div>
+
+            <!-- News Stats -->
+            <div class="mt-8 dragon-card rounded-xl p-4">
+                <div class="text-center">
+                    <h3 class="font-medieval text-lg font-semibold text-gold-400 mb-3">📊 СТАТИСТИКА НОВОСТЕЙ</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="text-center">
+                            <div class="text-xl font-bold text-blood-400">12</div>
+                            <div class="text-xs text-dragon-300 font-story">Всего новостей</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-xl font-bold text-gold-500">5</div>
+                            <div class="text-xs text-dragon-300 font-story">Обновлений</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-xl font-bold text-blood-400">4</div>
+                            <div class="text-xs text-dragon-300 font-story">Событий</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-xl font-bold text-gold-500">3</div>
+                            <div class="text-xs text-dragon-300 font-story">PvP новостей</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="py-6 px-4 mt-8">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="dragon-card rounded-xl p-4">
+                <p class="font-story text-xs text-dragon-300 mb-2">
+                    © 2024 Амулет дракона. Все права защищены.
+                </p>
+                <div class="flex justify-center space-x-4 text-xs">
+                    <a href="index.html" class="text-gold-500 hover:text-gold-400 transition-colors">Главная</a>
+                    <a href="register.html" class="text-gold-500 hover:text-gold-400 transition-colors">Регистрация</a>
+                    <a href="login.html" class="text-gold-500 hover:text-gold-400 transition-colors">Вход</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="scripts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryFilters = document.querySelectorAll('.category-filter');
+            const newsItems = document.querySelectorAll('[data-category]');
+            const paginationBtns = document.querySelectorAll('[data-page]');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const newsPages = document.querySelectorAll('.news-content');
+            
+            let currentPage = 1;
+            let currentCategory = 'all';
+            const totalPages = 2;
+
+            // Category filtering
+            categoryFilters.forEach(filter => {
+                filter.addEventListener('click', function() {
+                    // Remove active class from all filters
+                    categoryFilters.forEach(f => {
+                        f.classList.remove('active', 'news-category');
+                        f.classList.add('pagination-btn');
+                    });
+                    
+                    // Add active class to clicked filter
+                    this.classList.add('active', 'news-category');
+                    this.classList.remove('pagination-btn');
+                    
+                    currentCategory = this.dataset.category;
+                    filterNews();
+                });
+            });
+
+            // Pagination
+            paginationBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const page = parseInt(this.dataset.page);
+                    goToPage(page);
+                });
+            });
+
+            prevBtn.addEventListener('click', function() {
+                if (currentPage > 1) {
+                    goToPage(currentPage - 1);
+                }
+            });
+
+            nextBtn.addEventListener('click', function() {
+                if (currentPage < totalPages) {
+                    goToPage(currentPage + 1);
+                }
+            });
+
+            function goToPage(page) {
+                currentPage = page;
+                
+                // Hide all pages
+                newsPages.forEach(p => p.classList.remove('active'));
+                
+                // Show current page
+                document.getElementById(`page${page}`).classList.add('active');
+                
+                // Update pagination buttons
+                paginationBtns.forEach(btn => {
+                    btn.classList.remove('active');
+                    if (parseInt(btn.dataset.page) === page) {
+                        btn.classList.add('active');
+                    }
+                });
+                
+                // Update prev/next buttons
+                prevBtn.disabled = (page === 1);
+                nextBtn.disabled = (page === totalPages);
+                
+                if (page === 1) {
+                    prevBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    prevBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+                
+                if (page === totalPages) {
+                    nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                } else {
+                    nextBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                }
+
+                // Apply current category filter to new page
+                filterNews();
+                
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            function filterNews() {
+                const currentPageElement = document.getElementById(`page${currentPage}`);
+                const itemsInCurrentPage = currentPageElement.querySelectorAll('[data-category]');
+                
+                itemsInCurrentPage.forEach(item => {
+                    if (currentCategory === 'all' || item.dataset.category === currentCategory) {
+                        item.style.display = 'block';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            }
+
+            // Initialize
+            goToPage(1);
+        });
+    </script>
+</body>
+</html>
