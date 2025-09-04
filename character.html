@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Персонаж - Амулет дракона</title>
+    <meta name="description" content="Управление персонажем в текстовой MMORPG - Амулет дракона">
+    
+    <!-- Preload critical resources -->
+    <link rel="preload" href="styles.css" as="style">
+    <link rel="preload" href="scripts.js" as="script">
+    <link rel="preload" href="components.js" as="script">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        dragon: {
+                            50: '#fafafa', 100: '#f4f4f5', 200: '#e4e4e7', 300: '#d4d4d8',
+                            400: '#a1a1aa', 500: '#71717a', 600: '#52525b', 700: '#3f3f46',
+                            800: '#27272a', 900: '#18181b',
+                        },
+                        blood: {
+                            50: '#fef2f2', 100: '#fee2e2', 200: '#fecaca', 300: '#fca5a5',
+                            400: '#f87171', 500: '#ef4444', 600: '#dc2626', 700: '#b91c1c',
+                            800: '#991b1b', 900: '#7f1d1d',
+                        },
+                        gold: {
+                            50: '#fffbeb', 100: '#fef3c7', 200: '#fde68a', 300: '#fcd34d',
+                            400: '#fbbf24', 500: '#f59e0b', 600: '#d97706', 700: '#b45309',
+                            800: '#92400e', 900: '#78350f',
+                        }
+                    },
+                    fontFamily: { 'medieval': ['serif'] },
+                    screens: { 'xs': '475px' }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom styles -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <style>
+        .character-container {
+            min-height: 100vh;
+            min-height: 100dvh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .main-content {
+            flex: 1;
+            padding-bottom: 80px;
+        }
+        
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 80px;
+            background: linear-gradient(145deg, rgba(20, 20, 25, 0.98), rgba(10, 10, 15, 0.95));
+            backdrop-filter: blur(15px);
+            border-top: 1px solid rgba(245, 158, 11, 0.3);
+            z-index: 30;
+        }
+        
+        .nav-tab {
+            transition: all 0.3s ease;
+            min-height: 44px;
+        }
+        
+        .nav-tab.active {
+            background: linear-gradient(45deg, rgba(127, 29, 29, 0.3), rgba(185, 28, 28, 0.2));
+            border-top: 2px solid #d97706;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .stat-bar {
+            background: linear-gradient(90deg, #dc2626 0%, #ef4444 50%, #f87171 100%);
+        }
+        
+        .mana-bar {
+            background: linear-gradient(90deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
+        }
+        
+        .exp-bar {
+            background: linear-gradient(90deg, #059669 0%, #10b981 50%, #34d399 100%);
+        }
+        
+        .skill-bar {
+            background: linear-gradient(90deg, #7c3aed 0%, #a855f7 50%, #c084fc 100%);
+        }
+        
+        .equipment-slot {
+            aspect-ratio: 1;
+            min-height: 60px;
+            border: 2px dashed rgba(245, 158, 11, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .equipment-slot.occupied {
+            border: 2px solid #d97706;
+            background: linear-gradient(145deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05));
+        }
+        
+        .equipment-slot:hover {
+            border-color: #f59e0b;
+            background: linear-gradient(145deg, rgba(245, 158, 11, 0.2), rgba(217, 119, 6, 0.1));
+        }
+        
+        .achievement-card {
+            transition: all 0.3s ease;
+        }
+        
+        .achievement-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(245, 158, 11, 0.2);
+        }
+        
+        .quest-item {
+            transition: all 0.3s ease;
+        }
+        
+        .quest-item:hover {
+            background: linear-gradient(145deg, rgba(245, 158, 11, 0.1), rgba(217, 119, 6, 0.05));
+        }
+    </style>
+</head>
+<body class="dragon-bg text-white" style="background-color: #0a0a0a !important;">
+    
+    <!-- Character Container -->
+    <div class="character-container">
+        
+        <!-- Header -->
+        <div class="dragon-card rounded-b-2xl p-4 mx-2 mt-2">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-gradient-to-br from-gold-500 to-gold-700 rounded-full flex items-center justify-center text-xl font-bold mr-3">
+                        ⚔
+                    </div>
+                    <div>
+                        <h1 class="font-medieval font-bold text-gold-400 text-lg" id="characterName">КровавыйКлинок</h1>
+                        <p class="text-sm text-dragon-300">Ур.<span id="characterLevel">15</span> Воин • <span id="characterClass">Боец</span></p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <div class="text-gold-400 font-semibold text-lg" id="characterGold">1,250</div>
+                    <div class="text-sm text-dragon-400">💰 золота</div>
+                </div>
+            </div>
+            
+            <!-- Quick Stats -->
+            <div class="grid grid-cols-2 gap-4 text-xs">
+                <div class="text-center">
+                    <div class="text-lg font-bold text-red-400" id="quickHealth">85/100</div>
+                    <div class="text-dragon-300">❤ Здоровье</div>
+                </div>
+                <div class="text-center">
+                    <div class="text-lg font-bold text-blue-400" id="quickMana">45/60</div>
+                    <div class="text-dragon-300">🔮 Мана</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content px-2">
+            
+            <!-- Tab Content -->
+            <div class="mt-2">
+                
+                <!-- Overview Tab -->
+                <div id="overviewTab" class="tab-content active">
+                    
+                    <!-- Character Stats -->
+                    <div class="dragon-card rounded-xl p-4 mb-4">
+                        <h3 class="font-medieval font-semibold text-gold-400 mb-3 text-sm">📊 Основные характеристики</h3>
+                        
+                        <div class="space-y-3">
+                            <!-- Health -->
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-red-400">❤ Здоровье</span>
+                                    <span id="healthText">85/100</span>
+                                </div>
+                                <div class="w-full bg-dragon-800 rounded-full h-2">
+                                    <div class="stat-bar h-2 rounded-full" style="width: 85%" id="healthBar"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Mana -->
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-blue-400">🔮 Мана</span>
+                                    <span id="manaText">45/60</span>
+                                </div>
+                                <div class="w-full bg-dragon-800 rounded-full h-2">
+                                    <div class="mana-bar h-2 rounded-full" style="width: 75%" id="manaBar"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Experience -->
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-green-400">⭐ Опыт</span>
+                                    <span id="expText">2,340/3,000</span>
+                                </div>
+                                <div class="w-full bg-dragon-800 rounded-full h-2">
+                                    <div class="exp-bar h-2 rounded-full" style="width: 78%" id="expBar"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Attributes -->
+                    <div class="dragon-card rounded-xl p-4 mb-4">
+                        <h3 class="font-medieval font-semibold text-gold-400 mb-3 text-sm">⚡ Атрибуты</h3>
+                        
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="text-center">
+                                <div class="text-xl font-bold text-red-400">18</div>
+                                <div class="text-xs text-dragon-300">💪 Сила</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-xl font-bold text-blue-400">12</div>
+                                <div class="text-xs text-dragon-300">🧠 Интеллект</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-xl font-bold text-green-400">15</div>
+                                <div class="text-xs text-dragon-300">🏃 Ловкость</div>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-xl font-bold text-purple-400">14</div>
+                                <div class="text-xs text-dragon-300">🛡 Выносливость</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Guild & Location -->
+                    <div class="dragon-card rounded-xl p-4 mb-4">
+                        <h3 class="font-medieval font-semibold text-gold-400 mb-3 text-sm">🏰 Информация</h3>
+                        
+                        <div class="space-y-2">
+                            <div class="flex justify-between">
+                                <span class="text-dragon-300">Клан:</span>
+                                <span class="text-purple-400 font-semibold">Стальные Волки</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-dragon-300">Локация:</span>
+                                <span class="text-gold-400 font-semibold">Таверна "Пьяный Дракон"</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-dragon-300">Статус:</span>
+                                <span class="text-green-400 font-semibold">🟢 В игре</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <!-- Equipment Tab -->
+                <div id="equipmentTab" class="tab-content">
+                    
+                    <!-- Equipment Grid -->
+                    <div class="dragon-card rounded-xl p-4 mb-4">
+                        <h3 class="font-medieval font-semibold text-gold-400 mb-3 text-sm">⚔ Экипировка</h3>
+                        
+                        <div class="grid grid-cols-3 gap-3">
+                            <!-- Head -->
+                            <div class="equipment-slot rounded-lg flex items-center justify-center text-2xl" data-slot="head">
+                                <span class="text-dragon-500">👑</span>
+                            </div>
+                            
+                            <!-- Weapon -->
+                            <div class="equipment-slot occupied rounded-lg flex items-center justify-center text-2xl" data-slot="weapon">
+                                <span class="text-gold-400">⚔</span>
+                            </div>
+                            
+                            <!-- Shield -->
+                            <div class="equipment-slot occupied rounded-lg flex items-center justify-center text-2xl" data-slot="shield">
+                                <span class="text-blue-400">🛡</span>
+                            </div>
+                            
+                            <!-- Chest -->
+                            <div class="equipment-slot occupied rounded-lg flex items-center justify-center text-2xl" data-slot="chest">
+                                <span class="text-red-400">🦺</span>
+                            </div>
+                            
+                            <!-- Legs -->
+                            <div class="equipment-slot occupied rounded-lg flex items-center justify-center text-2xl" data-slot="legs">
+                                <span class="text-green-400">👖</span>
+                            </div>
+                            
+                            <!-- Boots -->
+                            <div class="equipment-slot occupied rounded-lg flex items-center justify-center text-2xl" data-slot="boots">
+                                <span class="text-purple-400">👢</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Equipment Details -->
+                    <div class="dragon-card rounded-xl p-4 mb-4">
+                        <h3 class="font-medieval font-semibold text-gold-400 mb-3 text-sm">📋 Детали экипировки</h3>
+                        
+                        <div class="space-y-3">
+                            <div class="border-l-4 border-gold-500 pl-3">
+                                <div class="font-semibold text-gold-400 text-sm">⚔ Стальной меч</div>
+                                <div class="text-xs text-dragon-300">Урон: 15-25 • +3 к силе</div>
+                            </div>
+                            <div class="border-l-4 border-blue-500 pl-3">
+                                <div class="font-semibold text-blue-400 text-sm">🛡 Деревянный щит</div>
+                                <div class="text-xs text-dragon-300">Защита: 8 • +2 к выносливости</div>
+                            </div>
+                            <div class="border-l-4 border-red-500 pl-3">
+                                <div class="font-semibold text-red-400 text-sm">🦺 Кожаная броня</div>
+                                <div class="text-xs text-dragon-300">Защита: 12 • +1 к силе</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <!-- Skills Tab -->
+                <div id="skillsTab" class="tab-content">
+                    
+                    <!-- Combat Skills -->
+                    <div class="dragon-card rounded-xl p-4 mb-4">
+                        <h3 class="font-medieval font-semibold text-gold-400 mb-3 text-sm">⚔ Боевые навыки</h3>
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-red-400">🗡 Владение мечом</span>
+                                    <span>75/100</span>
+                                </div>
+                                <div class="w-full bg-dragon-800 rounded-full h-2">
+                                    <div class="skill-bar h-2 rounded-full" style="width: 75%"></div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-blue-400">🛡 Защита</span>
+                                    <span>60/100</span>
+                                </div>
+                                <div class="w-full bg-dragon-800 rounded-full h-2">
+                                    <div class="skill-bar h-2 rounded-full" style="width: 60%"></div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-green-400">🏹 Стрельба из лука</span>
+                                    <span>45/100</span>
+                                </div>
+                                <div class="w-full bg-dragon-800 rounded-full h-2">
+                                    <div class="skill-bar h-2 rounded-full" style="width: 45%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Magic Skills -->
+                    <div class="dragon-card rounded-xl p-4 mb-4">
+                        <h3 class="font-medieval font-semibold text-gold-400 mb-3 text-sm">🔮 Магические навыки</h3>
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-purple-400">🔥 Огненная магия</span>
+                                    <span>30/100</span>
+                                </div>
+                                <div class="w-full bg-dragon-800 rounded-full h-2">
+                                    <div class="skill-bar h-2 rounded-full" style="width: 30%"></div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="text-blue-400">❄ Ледяная магия</span>
+                                    <span>20/100</span>
+                                </div>
+                                <div class="w-full bg-dragon-800 rounded-full h-2">
+                                    <div class="skill-bar h-2 rounded-full" style="width: 20%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+                <!-- Achievements Tab -->
+                <div id="achievementsTab" class="tab-content">
+                    
+                    <!-- Recent Achievements -->
+                    <div class="dragon-card rounded-xl p-4 mb-4">
+                        <h3 class="font-medieval font-semibold text-gold-400 mb-3 text-sm">🏆 Достижения</h3>
+                        
+                        <div class="space-y-3">
+                            <div class="achievement-card p-3 rounded-lg border-l-4 border-gold-500">
+                                <div class="flex items-center">
+                                    <span class="text-2xl mr-3">🥇</span>
+                                    <div>
+                                        <div class="font-semibold text-gold-400 text-sm">Первый бой</div>
+                                        <div class="text-xs text-dragon-300">Победите первого врага</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="achievement-card p-3 rounded-lg border-l-4 border-green-500">
+                                <div class="flex items-center">
+                                    <span class="text-2xl mr-3">💰</span>
+                                    <div>
+                                        <div class="font-semibold text-green-400 text-sm">Богач</div>
+                                        <div class="text-xs text-dragon-300">Накопите 1000 золота</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="achievement-card p-3 rounded-lg border-l-4 border-purple-500">
+                                <div class="flex items-center">
+                                    <span class="text-2xl mr-3">👥</span>
+                                    <div>
+                                        <div class="font-semibold text-purple-400 text-sm">Командный игрок</div>
+                                        <div class="text-xs text-dragon-300">Вступите в клан</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="flex h-full">
+                <button class="nav-tab flex-1 flex flex-col items-center justify-center active" onclick="switchTab('overview')">
+                    <span class="text-2xl mb-1">📊</span>
+                    <span class="text-xs font-medieval">Обзор</span>
+                </button>
+                <button class="nav-tab flex-1 flex flex-col items-center justify-center" onclick="switchTab('equipment')">
+                    <span class="text-2xl mb-1">⚔</span>
+                    <span class="text-xs font-medieval">Экипировка</span>
+                </button>
+                <button class="nav-tab flex-1 flex flex-col items-center justify-center" onclick="switchTab('skills')">
+                    <span class="text-2xl mb-1">🔮</span>
+                    <span class="text-xs font-medieval">Навыки</span>
+                </button>
+                <button class="nav-tab flex-1 flex flex-col items-center justify-center" onclick="window.location.href='game.html'">
+                    <span class="text-2xl mb-1">🎮</span>
+                    <span class="text-xs font-medieval">Игра</span>
+                </button>
+            </div>
+        </div>
+        
+    </div>
+    
+    <!-- Scripts -->
+    <script src="scripts.js"></script>
+    <script src="components.js"></script>
+    
+    <script>
+        // Character data
+        let characterData = {
+            name: 'КровавыйКлинок',
+            level: 15,
+            class: 'Боец',
+            health: 85,
+            maxHealth: 100,
+            mana: 45,
+            maxMana: 60,
+            exp: 2340,
+            maxExp: 3000,
+            gold: 1250,
+            guild: 'Стальные Волки',
+            location: 'Таверна "Пьяный Дракон"',
+            attributes: {
+                strength: 18,
+                intelligence: 12,
+                agility: 15,
+                endurance: 14
+            },
+            skills: {
+                sword: 75,
+                shield: 60,
+                bow: 45,
+                fireMagic: 30,
+                iceMagic: 20
+            }
+        };
+        
+        // Initialize character page
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCharacterStats();
+            setupEquipmentSlots();
+            
+            console.log('Страница персонажа загружена');
+        });
+        
+        // Update character statistics display
+        function updateCharacterStats() {
+            const char = characterData;
+            
+            // Basic info
+            document.getElementById('characterName').textContent = char.name;
+            document.getElementById('characterLevel').textContent = char.level;
+            document.getElementById('characterClass').textContent = char.class;
+            document.getElementById('characterGold').textContent = char.gold.toLocaleString();
+            
+            // Quick stats
+            document.getElementById('quickHealth').textContent = `${char.health}/${char.maxHealth}`;
+            document.getElementById('quickMana').textContent = `${char.mana}/${char.maxMana}`;
+            
+            // Detailed stats
+            document.getElementById('healthText').textContent = `${char.health}/${char.maxHealth}`;
+            document.getElementById('manaText').textContent = `${char.mana}/${char.maxMana}`;
+            document.getElementById('expText').textContent = `${char.exp.toLocaleString()}/${char.maxExp.toLocaleString()}`;
+            
+            // Health bar
+            const healthPercent = (char.health / char.maxHealth) * 100;
+            document.getElementById('healthBar').style.width = healthPercent + '%';
+            
+            // Mana bar
+            const manaPercent = (char.mana / char.maxMana) * 100;
+            document.getElementById('manaBar').style.width = manaPercent + '%';
+            
+            // Exp bar
+            const expPercent = (char.exp / char.maxExp) * 100;
+            document.getElementById('expBar').style.width = expPercent + '%';
+        }
+        
+        // Tab switching
+        function switchTab(tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all nav buttons
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName + 'Tab').classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.closest('.nav-tab').classList.add('active');
+        }
+        
+        // Setup equipment slots
+        function setupEquipmentSlots() {
+            document.querySelectorAll('.equipment-slot').forEach(slot => {
+                slot.addEventListener('click', function() {
+                    const slotType = this.dataset.slot;
+                    showEquipmentOptions(slotType);
+                });
+            });
+        }
+        
+        // Show equipment options
+        function showEquipmentOptions(slotType) {
+            const slotNames = {
+                'head': 'Голова',
+                'weapon': 'Оружие',
+                'shield': 'Щит',
+                'chest': 'Нагрудник',
+                'legs': 'Поножи',
+                'boots': 'Обувь'
+            };
+            
+            alert(`Слот: ${slotNames[slotType]}\n\nЗдесь можно будет:\n• Снять предмет\n• Заменить предмет\n• Посмотреть детали`);
+        }
+    </script>
+    
+</body>
+</html>
