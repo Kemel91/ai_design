@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Игра - Амулет дракона</title>
-    <meta name="description" content="Текстовая MMORPG - Амулет дракона. Играйте прямо в браузере!">
+    <title>Локация - Амулет дракона</title>
+    <meta name="description" content="Просмотр локации в текстовой MMORPG - Амулет дракона">
     
     <!-- Preload critical resources -->
     <link rel="preload" href="styles.css" as="style">
@@ -45,17 +45,16 @@
     <link rel="stylesheet" href="styles.css">
     
     <style>
-        .mobile-game-container {
-            height: 100vh;
-            height: 100dvh; /* Dynamic viewport height for mobile */
+        .location-container {
+            min-height: 100vh;
+            min-height: 100dvh;
             display: flex;
             flex-direction: column;
         }
         
         .main-content {
             flex: 1;
-            overflow-y: auto;
-            padding-bottom: 80px; /* Space for bottom nav */
+            padding-bottom: 80px;
         }
         
         .bottom-nav {
@@ -80,16 +79,12 @@
             border-top: 2px solid #d97706;
         }
         
-        .health-bar {
-            background: linear-gradient(90deg, #dc2626 0%, #ef4444 50%, #f87171 100%);
+        .tab-content {
+            display: none;
         }
         
-        .mana-bar {
-            background: linear-gradient(90deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
-        }
-        
-        .exp-bar {
-            background: linear-gradient(90deg, #059669 0%, #10b981 50%, #34d399 100%);
+        .tab-content.active {
+            display: block;
         }
         
         .entity-card {
@@ -133,14 +128,6 @@
             display: block;
         }
         
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
         .swipe-indicator {
             width: 40px;
             height: 4px;
@@ -160,104 +147,58 @@
             z-index: 10;
             backdrop-filter: blur(10px);
         }
-        
-        .location-navigation {
-            transition: all 0.3s ease;
-        }
-        
-        .location-navigation.hidden {
-            display: none;
-        }
     </style>
 </head>
 <body class="dragon-bg text-white" style="background-color: #0a0a0a !important;">
     
-    <!-- Mobile Game Container -->
-    <div class="mobile-game-container">
+    <!-- Location Container -->
+    <div class="location-container">
         
-        <!-- Top Status Bar -->
-        <div class="dragon-card rounded-b-2xl p-3 mx-2 mt-2">
-            <div class="flex items-center justify-between mb-2">
+        <!-- Header -->
+        <div class="dragon-card rounded-b-2xl p-4 mx-2 mt-2">
+            <div class="flex items-center justify-between mb-4">
                 <div class="flex items-center">
-                    <div class="w-10 h-10 bg-gradient-to-br from-gold-500 to-gold-700 rounded-full flex items-center justify-center text-lg font-bold mr-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-gold-500 to-gold-700 rounded-full flex items-center justify-center text-xl font-bold mr-3">
                         ⚔
                     </div>
                     <div>
-                        <h1 class="font-medieval font-bold text-gold-400 text-sm" id="playerName">КровавыйКлинок</h1>
-                        <p class="text-xs text-dragon-300">Ур.<span id="playerLevel">15</span> Воин</p>
+                        <h1 class="font-medieval font-bold text-gold-400 text-lg">КровавыйКлинок</h1>
+                        <p class="text-sm text-dragon-300">Ур.15 Воин • Стальные Волки</p>
                     </div>
                 </div>
                 <div class="text-right">
-                    <div class="text-gold-400 font-semibold text-sm" id="playerGold">1,250</div>
-                    <div class="text-xs text-dragon-400">💰</div>
-                </div>
-            </div>
-            
-            <!-- Health & Mana Bars -->
-            <div class="space-y-1">
-                <div class="flex justify-between text-xs">
-                    <span class="text-red-400">❤</span>
-                    <span id="healthText">85/100</span>
-                </div>
-                <div class="w-full bg-dragon-800 rounded-full h-2">
-                    <div class="health-bar h-2 rounded-full" style="width: 85%" id="healthBar"></div>
-                </div>
-                
-                <div class="flex justify-between text-xs">
-                    <span class="text-blue-400">🔮</span>
-                    <span id="manaText">45/60</span>
-                </div>
-                <div class="w-full bg-dragon-800 rounded-full h-2">
-                    <div class="mana-bar h-2 rounded-full" style="width: 75%" id="manaBar"></div>
+                    <div class="text-gold-400 font-semibold text-lg">1,250</div>
+                    <div class="text-sm text-dragon-400">💰 золота</div>
                 </div>
             </div>
         </div>
         
-        <!-- Main Content Area -->
-        <div class="main-content px-2">
-            
-            <!-- Fixed Location Info (Always Visible) -->
-            <div class="dragon-card rounded-xl p-4 mt-2 sticky-location">
-                <div class="flex items-center justify-between mb-3">
-                    <h2 class="font-medieval text-lg font-bold text-gold-400 flex items-center" id="currentLocation">
-                        🍺 Таверна "Пьяный Дракон"
-                    </h2>
-                                    <button class="btn-secondary px-3 py-1 rounded-lg font-medieval text-xs" onclick="window.location.href='location.html'">
-                    👁 Обзор
+        <!-- Fixed Location Info (Always Visible) -->
+        <div class="dragon-card rounded-xl p-4 mx-2 mt-2 sticky-location">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="font-medieval text-lg font-bold text-gold-400 flex items-center" id="currentLocation">
+                    🍺 Таверна "Пьяный Дракон"
+                </h2>
+                <button class="btn-secondary px-3 py-1 rounded-lg font-medieval text-xs" onclick="window.location.href='game.html'">
+                    🎮 Игра
                 </button>
-                </div>
-                
-                <!-- Location Journal (Priority) -->
-                <div class="location-journal rounded-lg p-3">
-                    <h3 class="font-medieval font-semibold text-gold-400 mb-2 text-xs flex items-center">
-                        📋 События
-                    </h3>
-                    <div class="space-y-1 max-h-16 overflow-y-auto text-xs" id="locationJournal">
-                        <div class="text-gold-300">🍺 Вы входите в таверну "Пьяный Дракон"</div>
-                        <div class="text-dragon-300">🔥 Камин потрескивает, разбрасывая искры</div>
-                        <div class="text-dragon-300">🎵 Бармен напевает веселую песню</div>
-                    </div>
-                </div>
             </div>
             
-            <!-- Location Navigation (Collapsible) -->
-            <div id="locationNavigation" class="dragon-card rounded-xl p-4 mt-2 location-navigation hidden">
-                <h3 class="font-medieval font-semibold text-gold-400 mb-3 text-sm">🚪 Переходы</h3>
-                <div class="grid grid-cols-1 gap-2">
-                    <button class="location-exit btn-secondary px-4 py-3 rounded-lg font-medieval text-sm flex items-center justify-between" onclick="goToLocation('square')">
-                        <span>🏛 Городская площадь</span>
-                        <span class="text-xs text-dragon-400">Улица</span>
-                    </button>
-                    <button class="location-exit btn-secondary px-4 py-3 rounded-lg font-medieval text-sm flex items-center justify-between" onclick="goToLocation('rooms')">
-                        <span>🛏 Комнаты для постояльцев</span>
-                        <span class="text-xs text-dragon-400">Отдых</span>
-                    </button>
-                    <button class="location-exit btn-secondary px-4 py-3 rounded-lg font-medieval text-sm flex items-center justify-between" onclick="goToLocation('cellar')">
-                        <span>🕳 Подвал таверны</span>
-                        <span class="text-xs text-dragon-400">Подземелье</span>
-                    </button>
+            <!-- Location Journal (Priority) -->
+            <div class="location-journal rounded-lg p-3">
+                <h3 class="font-medieval font-semibold text-gold-400 mb-2 text-xs flex items-center">
+                    📋 События
+                </h3>
+                <div class="space-y-1 max-h-16 overflow-y-auto text-xs" id="locationJournal">
+                    <div class="text-gold-300">🍺 Вы входите в таверну "Пьяный Дракон"</div>
+                    <div class="text-dragon-300">🔥 Камин потрескивает, разбрасывая искры</div>
+                    <div class="text-dragon-300">🎵 Бармен напевает веселую песню</div>
                 </div>
             </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content px-2">
             
             <!-- Tab Content -->
             <div class="mt-2">
@@ -367,88 +308,15 @@
                     </div>
                 </div>
                 
-                <!-- Chat Tab -->
-                <div id="chatTab" class="tab-content">
+                <!-- Location Info Tab -->
+                <div id="locationInfoTab" class="tab-content">
                     <div class="dragon-card rounded-xl p-4">
-                        <h3 class="font-medieval font-semibold text-gold-400 mb-3 text-sm">💬 Чат</h3>
-                        
-                        <!-- Chat Messages -->
-                        <div class="space-y-2 mb-4 text-xs max-h-60 overflow-y-auto" id="chatMessages">
-                            <div>
-                                <span class="text-green-400">[ТеневойУбийца]:</span>
-                                <span class="text-dragon-200">Кто-нибудь знает, где найти Мастера Клинков?</span>
-                            </div>
-                            <div>
-                                <span class="text-gold-400">[Бармен Торвальд]:</span>
-                                <span class="text-dragon-200">Добро пожаловать в таверну, путник!</span>
-                            </div>
-                            <div>
-                                <span class="text-green-400">[ОгненнаяВалькирия]:</span>
-                                <span class="text-dragon-200">Ищу группу для похода в Темный лес</span>
-                            </div>
-                        </div>
-                        
-                        <!-- Chat Input -->
-                        <div class="space-y-2">
-                            <div class="flex gap-1 text-xs">
-                                <button class="chat-mode px-2 py-1 rounded bg-green-600 text-white" data-mode="say">Сказать</button>
-                                <button class="chat-mode px-2 py-1 rounded bg-dragon-600 text-dragon-200" data-mode="yell">Кричать</button>
-                                <button class="chat-mode px-2 py-1 rounded bg-dragon-600 text-dragon-200" data-mode="whisper">Шептать</button>
-                            </div>
-                            <div class="flex gap-2">
-                                <input 
-                                    type="text" 
-                                    id="chatInput" 
-                                    class="form-input flex-1 px-3 py-2 rounded-lg text-xs" 
-                                    placeholder="Введите сообщение..."
-                                    maxlength="200"
-                                >
-                                <button class="btn-dragon px-3 py-2 rounded-lg text-xs" onclick="sendMessage()">
-                                    📤
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Stats Tab -->
-                <div id="statsTab" class="tab-content">
-                    <div class="dragon-card rounded-xl p-4">
-                        <h3 class="font-medieval font-semibold text-gold-400 mb-3 text-sm">📊 Статистика</h3>
+                        <h3 class="font-medieval font-semibold text-gold-400 mb-3 text-sm">📍 Информация о локации</h3>
                         
                         <div class="space-y-3">
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="text-center">
-                                    <div class="text-xl font-bold text-gold-400">15</div>
-                                    <div class="text-xs text-dragon-300">Уровень</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="text-xl font-bold text-green-400">2,340</div>
-                                    <div class="text-xs text-dragon-300">Опыт</div>
-                                </div>
-                            </div>
-                            
-                            <div class="grid grid-cols-2 gap-4">
-                                <div class="text-center">
-                                    <div class="text-xl font-bold text-purple-400">Стальные Волки</div>
-                                    <div class="text-xs text-dragon-300">Клан</div>
-                                </div>
-                                <div class="text-center">
-                                    <div class="text-xl font-bold text-blue-400">1,250</div>
-                                    <div class="text-xs text-dragon-300">Золото</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Location Info in Stats -->
-                    <div class="dragon-card rounded-xl p-4 mt-4">
-                        <h3 class="font-medieval font-semibold text-gold-400 mb-3 text-sm">📍 Текущая локация</h3>
-                        
-                        <div class="space-y-2">
                             <div class="flex justify-between">
                                 <span class="text-dragon-300">Название:</span>
-                                <span class="text-gold-400 font-semibold" id="statsLocationName">Таверна "Пьяный Дракон"</span>
+                                <span class="text-gold-400 font-semibold">Таверна "Пьяный Дракон"</span>
                             </div>
                             <div class="flex justify-between">
                                 <span class="text-dragon-300">Тип:</span>
@@ -458,6 +326,42 @@
                                 <span class="text-dragon-300">Опасность:</span>
                                 <span class="text-green-400 font-semibold">🟢 Безопасно</span>
                             </div>
+                            <div class="flex justify-between">
+                                <span class="text-dragon-300">Владелец:</span>
+                                <span class="text-gold-400 font-semibold">Бармен Торвальд</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="dragon-card rounded-xl p-4 mt-4">
+                        <h3 class="font-medieval font-semibold text-gold-400 mb-3 text-sm">📝 Описание</h3>
+                        <p class="text-sm text-dragon-200 leading-relaxed">
+                            Уютная таверна в центре города, где собираются путешественники и местные жители. 
+                            Теплый свет камина освещает деревянные столы, а запах жареного мяса и свежего эля 
+                            наполняет воздух. Бармен Торвальд - дружелюбный полурослик, всегда готовый 
+                            поделиться новостями или предложить горячую еду.
+                        </p>
+                    </div>
+                </div>
+                
+                <!-- Exits Tab -->
+                <div id="exitsTab" class="tab-content">
+                    <div class="dragon-card rounded-xl p-4">
+                        <h3 class="font-medieval font-semibold text-gold-400 mb-3 text-sm">🚪 Выходы</h3>
+                        
+                        <div class="space-y-3">
+                            <button class="w-full location-exit btn-secondary px-4 py-3 rounded-lg font-medieval text-sm flex items-center justify-between" onclick="goToLocation('square')">
+                                <span>🏛 Городская площадь</span>
+                                <span class="text-xs text-dragon-400">Улица</span>
+                            </button>
+                            <button class="w-full location-exit btn-secondary px-4 py-3 rounded-lg font-medieval text-sm flex items-center justify-between" onclick="goToLocation('rooms')">
+                                <span>🛏 Комнаты для постояльцев</span>
+                                <span class="text-xs text-dragon-400">Отдых</span>
+                            </button>
+                            <button class="w-full location-exit btn-secondary px-4 py-3 rounded-lg font-medieval text-sm flex items-center justify-between" onclick="goToLocation('cellar')">
+                                <span>🕳 Подвал таверны</span>
+                                <span class="text-xs text-dragon-400">Подземелье</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -470,15 +374,15 @@
             <div class="flex h-full">
                 <button class="nav-tab flex-1 flex flex-col items-center justify-center active" onclick="switchTab('entities')">
                     <span class="text-2xl mb-1">👁</span>
-                    <span class="text-xs font-medieval">Локация</span>
+                    <span class="text-xs font-medieval">Объекты</span>
                 </button>
-                <button class="nav-tab flex-1 flex flex-col items-center justify-center" onclick="switchTab('chat')">
-                    <span class="text-2xl mb-1">💬</span>
-                    <span class="text-xs font-medieval">Чат</span>
+                <button class="nav-tab flex-1 flex flex-col items-center justify-center" onclick="switchTab('locationInfo')">
+                    <span class="text-2xl mb-1">📍</span>
+                    <span class="text-xs font-medieval">Инфо</span>
                 </button>
-                <button class="nav-tab flex-1 flex flex-col items-center justify-center" onclick="switchTab('stats')">
-                    <span class="text-2xl mb-1">📊</span>
-                    <span class="text-xs font-medieval">Статы</span>
+                <button class="nav-tab flex-1 flex flex-col items-center justify-center" onclick="switchTab('exits')">
+                    <span class="text-2xl mb-1">🚪</span>
+                    <span class="text-xs font-medieval">Выходы</span>
                 </button>
                 <button class="nav-tab flex-1 flex flex-col items-center justify-center" onclick="window.location.href='character.html'">
                     <span class="text-2xl mb-1">👤</span>
@@ -506,53 +410,10 @@
     <script src="components.js"></script>
     
     <script>
-        // Game state
-        let currentTab = 'entities';
-        let currentChatMode = 'say';
-        let gameData = {
-            player: {
-                name: 'КровавыйКлинок',
-                level: 15,
-                health: 85,
-                maxHealth: 100,
-                mana: 45,
-                maxMana: 60,
-                exp: 2340,
-                maxExp: 3000,
-                gold: 1250,
-                guild: 'Стальные Волки'
-            },
-            location: 'tavern'
-        };
-        
-        // Initialize game
+        // Initialize location page
         document.addEventListener('DOMContentLoaded', function() {
-            updatePlayerStats();
-            setupChatModes();
-            setupChatInput();
-            simulateActivity();
-            
-            console.log('Мобильная игра загружена - Таверна "Пьяный Дракон"');
+            console.log('Страница локации загружена');
         });
-        
-        // Update player statistics display
-        function updatePlayerStats() {
-            const player = gameData.player;
-            
-            document.getElementById('playerName').textContent = player.name;
-            document.getElementById('playerLevel').textContent = player.level;
-            document.getElementById('playerGold').textContent = player.gold.toLocaleString();
-            
-            // Health bar
-            const healthPercent = (player.health / player.maxHealth) * 100;
-            document.getElementById('healthBar').style.width = healthPercent + '%';
-            document.getElementById('healthText').textContent = `${player.health}/${player.maxHealth}`;
-            
-            // Mana bar
-            const manaPercent = (player.mana / player.maxMana) * 100;
-            document.getElementById('manaBar').style.width = manaPercent + '%';
-            document.getElementById('manaText').textContent = `${player.mana}/${player.maxMana}`;
-        }
         
         // Tab switching
         function switchTab(tabName) {
@@ -571,8 +432,6 @@
             
             // Add active class to clicked button
             event.target.closest('.nav-tab').classList.add('active');
-            
-            currentTab = tabName;
         }
         
         // Action sheet system
@@ -640,94 +499,15 @@
             sheet.classList.remove('show');
         }
         
-        // Chat system
-        function setupChatModes() {
-            document.querySelectorAll('.chat-mode').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.chat-mode').forEach(b => {
-                        b.classList.remove('bg-green-600', 'text-white');
-                        b.classList.add('bg-dragon-600', 'text-dragon-200');
-                    });
-                    
-                    this.classList.remove('bg-dragon-600', 'text-dragon-200');
-                    this.classList.add('bg-green-600', 'text-white');
-                    
-                    currentChatMode = this.dataset.mode;
-                });
-            });
-        }
-        
-        function setupChatInput() {
-            const input = document.getElementById('chatInput');
-            input.addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    sendMessage();
-                }
-            });
-        }
-        
-        function sendMessage() {
-            const input = document.getElementById('chatInput');
-            const message = input.value.trim();
-            
-            if (!message) return;
-            
-            const chatMessages = document.getElementById('chatMessages');
-            const messageDiv = document.createElement('div');
-            
-            let prefix = '';
-            switch(currentChatMode) {
-                case 'say':
-                    prefix = `<span class="text-green-400">[${gameData.player.name}]:</span>`;
-                    break;
-                case 'yell':
-                    prefix = `<span class="text-yellow-400">[${gameData.player.name} кричит]:</span>`;
-                    break;
-                case 'whisper':
-                    prefix = `<span class="text-blue-400">[${gameData.player.name} шепчет]:</span>`;
-                    break;
-            }
-            
-            messageDiv.innerHTML = `${prefix} <span class="text-dragon-200">${message}</span>`;
-            chatMessages.appendChild(messageDiv);
-            
-            // Scroll to bottom
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-            
-            // Clear input
-            input.value = '';
-        }
-        
-        // Add message to location journal
-        function addLocationJournal(message, icon = '📋') {
-            const journal = document.getElementById('locationJournal');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'text-dragon-300';
-            messageDiv.innerHTML = `${icon} ${message}`;
-            journal.appendChild(messageDiv);
-            
-            // Keep only last 5 messages
-            while (journal.children.length > 5) {
-                journal.removeChild(journal.firstChild);
-            }
-            
-            // Scroll to bottom
-            journal.scrollTop = journal.scrollHeight;
-        }
-        
         // Action handlers
         function talkToNPC(id) {
             hideActionSheet();
-            const responses = {
-                'barman': 'Добро пожаловать в мою таверну! У нас лучший эль в городе и горячая еда. Что желаете?'
-            };
             addLocationJournal('Вы говорите с барменом', '💬');
         }
         
         function talkToPlayer(id) {
             hideActionSheet();
-            document.getElementById('chatInput').focus();
-            switchTab('chat');
+            addLocationJournal(`Вы обращаетесь к игроку ${id}`, '💬');
         }
         
         function attackPlayer(id) {
@@ -751,24 +531,11 @@
                 'dagger': 'Старый кинжал'
             };
             addLocationJournal(`Вы подбираете ${items[id]}`, '📦');
-            
-            // Update gold if coin
-            if (id === 'coin') {
-                gameData.player.gold += 5;
-                updatePlayerStats();
-            }
         }
         
         function showInfo(type, id) {
             hideActionSheet();
-            // Show info modal or switch to stats tab
-            switchTab('stats');
-        }
-        
-        // Quick actions
-        function openQuickActions() {
-            // Show quick actions sheet
-            showActionSheet('quick', 'actions');
+            addLocationJournal(`Вы осматриваете ${type} ${id}`, '👁');
         }
         
         // Location navigation
@@ -779,55 +546,29 @@
                 'cellar': '🕳 Подвал таверны'
             };
             
-            const locationInfo = {
-                'square': { name: 'Городская площадь', type: 'Улица', danger: '🟡 Умеренно' },
-                'rooms': { name: 'Комнаты для постояльцев', type: 'Отдых', danger: '🟢 Безопасно' },
-                'cellar': { name: 'Подвал таверны', type: 'Подземелье', danger: '🔴 Опасно' }
-            };
-            
-            // Update current location display
-            document.getElementById('currentLocation').textContent = locations[locationId];
-            
-            // Update stats tab location info
-            const info = locationInfo[locationId];
-            document.getElementById('statsLocationName').textContent = info.name;
-            
-            // Add to journal
             addLocationJournal(`Вы направляетесь в: ${locations[locationId]}`, '🚪');
             
-            // Hide navigation
-            toggleLocationNavigation();
-            
-            // Simulate location change
+            // Redirect to game
             setTimeout(() => {
-                addLocationJournal(`Вы прибываете в ${locations[locationId]}`, '✨');
-                
-                // Update location in game data
-                gameData.location = locationId;
+                window.location.href = 'game.html';
             }, 1000);
         }
         
-        // Toggle location navigation
-        function toggleLocationNavigation() {
-            const nav = document.getElementById('locationNavigation');
-            nav.classList.toggle('hidden');
-        }
-        
-        // Simulate game activity
-        function simulateActivity() {
-            setInterval(() => {
-                if (Math.random() < 0.15) {
-                    const events = [
-                        { message: 'Бармен наливает новую порцию эля', icon: '🍺' },
-                        { message: 'Крыса пробегает под столом', icon: '🐀' },
-                        { message: 'Камин потрескивает, разбрасывая искры', icon: '🔥' },
-                        { message: 'Кто-то входит в таверну', icon: '🚪' },
-                        { message: 'Слышен смех из дальнего угла', icon: '😄' }
-                    ];
-                    const event = events[Math.floor(Math.random() * events.length)];
-                    addLocationJournal(event.message, event.icon);
-                }
-            }, 5000);
+        // Add message to location journal
+        function addLocationJournal(message, icon = '📋') {
+            const journal = document.getElementById('locationJournal');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'text-dragon-300';
+            messageDiv.innerHTML = `${icon} ${message}`;
+            journal.appendChild(messageDiv);
+            
+            // Keep only last 5 messages
+            while (journal.children.length > 5) {
+                journal.removeChild(journal.firstChild);
+            }
+            
+            // Scroll to bottom
+            journal.scrollTop = journal.scrollHeight;
         }
     </script>
     

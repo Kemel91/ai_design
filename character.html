@@ -160,16 +160,28 @@
                     <div class="text-sm text-dragon-400">💰 золота</div>
                 </div>
             </div>
+        </div>
+        
+        <!-- Fixed Location Info (Always Visible) -->
+        <div class="dragon-card rounded-xl p-4 mx-2 mt-2 sticky-location">
+            <div class="flex items-center justify-between mb-3">
+                <h2 class="font-medieval text-lg font-bold text-gold-400 flex items-center" id="currentLocation">
+                    🍺 Таверна "Пьяный Дракон"
+                </h2>
+                <button class="btn-secondary px-3 py-1 rounded-lg font-medieval text-xs" onclick="window.location.href='location.html'">
+                    👁 Обзор
+                </button>
+            </div>
             
-            <!-- Quick Stats -->
-            <div class="grid grid-cols-2 gap-4 text-xs">
-                <div class="text-center">
-                    <div class="text-lg font-bold text-red-400" id="quickHealth">85/100</div>
-                    <div class="text-dragon-300">❤ Здоровье</div>
-                </div>
-                <div class="text-center">
-                    <div class="text-lg font-bold text-blue-400" id="quickMana">45/60</div>
-                    <div class="text-dragon-300">🔮 Мана</div>
+            <!-- Location Journal (Priority) -->
+            <div class="location-journal rounded-lg p-3">
+                <h3 class="font-medieval font-semibold text-gold-400 mb-2 text-xs flex items-center">
+                    📋 События
+                </h3>
+                <div class="space-y-1 max-h-16 overflow-y-auto text-xs" id="locationJournal">
+                    <div class="text-gold-300">🍺 Вы входите в таверну "Пьяный Дракон"</div>
+                    <div class="text-dragon-300">🔥 Камин потрескивает, разбрасывая искры</div>
+                    <div class="text-dragon-300">🎵 Бармен напевает веселую песню</div>
                 </div>
             </div>
         </div>
@@ -183,42 +195,26 @@
                 <!-- Overview Tab -->
                 <div id="overviewTab" class="tab-content active">
                     
-                    <!-- Character Stats -->
+                    <!-- Character Info -->
                     <div class="dragon-card rounded-xl p-4 mb-4">
-                        <h3 class="font-medieval font-semibold text-gold-400 mb-3 text-sm">📊 Основные характеристики</h3>
+                        <h3 class="font-medieval font-semibold text-gold-400 mb-3 text-sm">👤 Информация о персонаже</h3>
                         
                         <div class="space-y-3">
-                            <!-- Health -->
-                            <div>
-                                <div class="flex justify-between text-xs mb-1">
-                                    <span class="text-red-400">❤ Здоровье</span>
-                                    <span id="healthText">85/100</span>
-                                </div>
-                                <div class="w-full bg-dragon-800 rounded-full h-2">
-                                    <div class="stat-bar h-2 rounded-full" style="width: 85%" id="healthBar"></div>
-                                </div>
+                            <div class="flex justify-between">
+                                <span class="text-dragon-300">Имя:</span>
+                                <span class="text-gold-400 font-semibold">КровавыйКлинок</span>
                             </div>
-                            
-                            <!-- Mana -->
-                            <div>
-                                <div class="flex justify-between text-xs mb-1">
-                                    <span class="text-blue-400">🔮 Мана</span>
-                                    <span id="manaText">45/60</span>
-                                </div>
-                                <div class="w-full bg-dragon-800 rounded-full h-2">
-                                    <div class="mana-bar h-2 rounded-full" style="width: 75%" id="manaBar"></div>
-                                </div>
+                            <div class="flex justify-between">
+                                <span class="text-dragon-300">Уровень:</span>
+                                <span class="text-gold-400 font-semibold">15</span>
                             </div>
-                            
-                            <!-- Experience -->
-                            <div>
-                                <div class="flex justify-between text-xs mb-1">
-                                    <span class="text-green-400">⭐ Опыт</span>
-                                    <span id="expText">2,340/3,000</span>
-                                </div>
-                                <div class="w-full bg-dragon-800 rounded-full h-2">
-                                    <div class="exp-bar h-2 rounded-full" style="width: 78%" id="expBar"></div>
-                                </div>
+                            <div class="flex justify-between">
+                                <span class="text-dragon-300">Класс:</span>
+                                <span class="text-blue-400 font-semibold">Воин</span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-dragon-300">Клан:</span>
+                                <span class="text-purple-400 font-semibold">Стальные Волки</span>
                             </div>
                         </div>
                     </div>
